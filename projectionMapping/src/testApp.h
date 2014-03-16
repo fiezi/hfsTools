@@ -75,6 +75,11 @@ class testApp : public ofBaseApp, public Actor{
         Vector4f xC;
         Vector4f yC;
 
+
+        Matrix4f pMat1;
+        Matrix4f pMat2;
+        Matrix4f cMat;
+
         int mX;
         int mY;
 

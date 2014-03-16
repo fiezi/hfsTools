@@ -66,7 +66,7 @@ void testApp::setup(){
     dilateAmount=0;
     blurAmount=0;
 
-    bInvertMask=false;
+    bInvertMask=true;
 
     ocvImage.allocate(640,480);
     ocvMask.allocate(640,480);
@@ -189,8 +189,15 @@ void testApp::update(){
     for(int i = 0; i < contourFinder.nBlobs; i++) {
         mX=contourFinder.blobs[i].centroid.x *(1280.0f/640.0f);
         mY=contourFinder.blobs[i].centroid.y *(800.0/480.0f);
+
+        Vector4f myVec=Vector4f(mX,mY,0,0);
+        myVec= cMat* myVec;
+
+        cout << myVec << endl;
+
         rgbaFbo.begin();
-            drawFill( (mX/128)*128,(mY/128)*128);
+            //drawFill( (mX/128)*128,(mY/128)*128);
+            drawFill( myVec.x/10.0,myVec.y/10.0);
         rgbaFbo.end();
     }
 
@@ -233,6 +240,8 @@ void testApp::draw(){
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
 
+    ofSetLineWidth(1.0);
+
     stageImage.draw(mainW,0);
     //kinect.draw(1920,0);
 
@@ -272,23 +281,25 @@ void testApp::draw(){
 
     kinect.drawDepth(1000,0);
 
+    ofPushMatrix();
+        ofTranslate(100,100);
+        ofScale(0.25,0.25,1.0);
 
             //do das crazy Mathematics
-
             ofPushMatrix();
 
             ofPoint dstC[]={ofPoint(0,0),ofPoint(640,0),ofPoint(640,480),ofPoint(0,480)};
             ofPoint srcC[]={ofPoint(xC[0],yC[0]),ofPoint(xC[1],yC[1]),ofPoint(xC[2],yC[2]),ofPoint(xC[3],yC[3])};
 
-
-            GLfloat matrixC[16];
-            findHomography(srcC,dstC,matrixC);
-            glMultMatrixf(matrixC);
+            findHomography(srcC,dstC,cMat);
+            glMultMatrixf(cMat);
 
             //ofSetColor(1.0,0.0,0.0,0.5);
-            //kinect.drawDepth(0,0);
+            kinect.drawDepth(0,0);
 
             ofPopMatrix();
+
+    ofPopMatrix();
 
 
     //DRAW ALL TEH GRIDZ!!!11!
@@ -311,9 +322,8 @@ void testApp::draw(){
             ofPoint src[]={ofPoint(0,0),ofPoint(1280,0),ofPoint(1280,800),ofPoint(0,800)};
             ofPoint dst[]={ofPoint(xP[0],yP[0]),ofPoint(xP[1],yP[1]),ofPoint(xP[2],yP[2]),ofPoint(xP[3],yP[3])};
 
-            GLfloat matrix[16];
-            findHomography(src,dst,matrix);
-            glMultMatrixf(matrix);
+            findHomography(src,dst,pMat1);
+            glMultMatrixf(pMat1);
             ofSetHexColor(0xffffff);
 
             rgbaFbo.draw(0,0);
@@ -338,9 +348,8 @@ void testApp::draw(){
             ofPoint dstP2[]={ofPoint(xP2[0],yP2[0]),ofPoint(xP2[1],yP2[1]),ofPoint(xP2[2],yP2[2]),ofPoint(xP2[3],yP2[3])};
 
 
-            GLfloat matrixP2[16];
-            findHomography(srcP2,dstP2,matrixP2);
-            glMultMatrixf(matrixP2);
+            findHomography(srcP2,dstP2,pMat2);
+            glMultMatrixf(pMat2);
             ofSetHexColor(0xffffff);
 
             rgbaFbo.draw(0,0);
@@ -354,7 +363,7 @@ void testApp::draw(){
         //draw final translated first Grid
         ofTranslate(mainW,0);//main monitor resolution
         ofPushMatrix();
-            glMultMatrixf(matrix);
+            glMultMatrixf(pMat1);
             ofSetColor(255,255,255);
             rgbaFbo.draw(0,0);
         ofPopMatrix();
@@ -362,7 +371,7 @@ void testApp::draw(){
         //draw final translated second Grid
         ofTranslate(firstW,0); //first additional screen resolution
         ofPushMatrix();
-            glMultMatrixf(matrixP2);
+            glMultMatrixf(pMat2);
             ofSetColor(255,255,255);
             rgbaFbo.draw(0,0);
         ofPopMatrix();
