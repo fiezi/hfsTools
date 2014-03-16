@@ -30,6 +30,15 @@ void testApp::setup(){
     yP[2]=800;
     yP[3]=800;
 
+    xP2[0]=0;
+    xP2[1]=1280;
+    xP2[2]=1280;
+    xP2[3]=0;
+    yP2[0]=0;
+    yP2[1]=0;
+    yP2[2]=800;
+    yP2[3]=800;
+
     xC[0]=0;
     xC[1]=640;
     xC[2]=640;
@@ -42,8 +51,26 @@ void testApp::setup(){
     mX=0;
     mY=0;
 
+    mainW = 1920;
+    mainH = 1080;
+    firstW = 1920;
+    firstH = 1080;
+    secondW = 1280;
+    secondH = 800;
+
     threshold=40;
 
+    lineWidth=4.0;
+
+    erodeAmount=0;
+    dilateAmount=0;
+    blurAmount=0;
+
+    bInvertMask=false;
+
+    ocvImage.allocate(640,480);
+    ocvMask.allocate(640,480);
+    ocvDiff.allocate(640,480);
 
     kinect.bImage = true;
     kinect.init();
@@ -51,6 +78,13 @@ void testApp::setup(){
     kinect.open();
 
 	ofBackground(0,0,64);
+
+
+    pixelBufferOne= new unsigned char[640*480];
+    pixelBufferTwo= new unsigned char[640*480];
+    pixelBufferThree= new unsigned char[640*480];
+
+
     //ofSetFrameRate(25);
 
 
@@ -109,205 +143,15 @@ void testApp::registerProperties(){
     createMemberID("YC",&yC,this);
 
     createMemberID("THRESHOLD",&threshold,this);
+    createMemberID("LINEWIDTH",&lineWidth,this);
+
+    createMemberID("DILATEAMOUNT",&dilateAmount,this);
+    createMemberID("ERODEAMOUNT",&erodeAmount,this);
+    createMemberID("BLURAMOUNT",&blurAmount,this);
 
 
 }
 
-void testApp::interfaceSetup(){
-    //Adding MSB content
-    BasicButton *but;
-
-    //eckKnoepfe
-    Vector3f eckScale=Vector3f(32,32,1);
-    Vector4f eckColor=Vector4f(1,1,1,1.0);
-
-
-    //corners
-    but= new AssignButton;
-    but->name="ecke1";
-    but->bDrawName=true;
-    but->bDragable=true;
-    but->tooltip="drag Me!";
-    but->setLocation(Vector3f(xP[0]+1920-16,yP[0]-16,0));
-    but->scale=eckScale;
-    but->color=eckColor;
-    but->bTriggerWhileDragging=true;
-    but->bResetAfterDrag=false;
-    but->textureID="ecke";
-    but->parent=this;
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-    but= new AssignButton;
-    but->name="ecke2";
-    but->bDrawName=true;
-    but->bDragable=true;
-    but->tooltip="drag Me!";
-    but->setLocation(Vector3f(xP[1]+1920-16,yP[1]-16,0));
-    but->scale=eckScale;
-    but->color=eckColor;
-    but->bTriggerWhileDragging=true;
-    but->bResetAfterDrag=false;
-    but->textureID="ecke";
-    but->parent=this;
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-    but= new AssignButton;
-    but->name="ecke3";
-    but->bDrawName=true;
-    but->bDragable=true;
-    but->tooltip="drag Me!";
-    but->setLocation(Vector3f(xP[2]+1920-16,yP[2]-16,0));
-    but->scale=eckScale;
-    but->color=eckColor;
-    but->bTriggerWhileDragging=true;
-    but->bResetAfterDrag=false;
-    but->textureID="ecke";
-    but->parent=this;
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-    but= new AssignButton;
-    but->name="ecke4";
-    but->bDrawName=true;
-    but->bDragable=true;
-    but->tooltip="drag Me!";
-    but->setLocation(Vector3f(xP[3]+1920-16,yP[3]-16,0));
-    but->scale=eckScale;
-    but->color=eckColor;
-    but->bTriggerWhileDragging=true;
-    but->bResetAfterDrag=false;
-    but->textureID="ecke";
-    but->parent=this;
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-
-// camera Corners
-    but= new AssignButton;
-    but->name="ecke1c";
-    but->bDrawName=true;
-    but->bDragable=true;
-    but->tooltip="drag Me!";
-    but->setLocation(Vector3f(xC[0]+1000-16,yC[0]-16,0));
-    but->scale=eckScale;
-    but->color=eckColor;
-    but->bTriggerWhileDragging=true;
-    but->bResetAfterDrag=false;
-    but->textureID="ecke";
-    but->parent=this;
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-    but= new AssignButton;
-    but->name="ecke2c";
-    but->bDrawName=true;
-    but->bDragable=true;
-    but->tooltip="drag Me!";
-    but->setLocation(Vector3f(xC[1]+1000-16,yC[1]-16,0));
-    but->scale=eckScale;
-    but->color=eckColor;
-    but->bTriggerWhileDragging=true;
-    but->bResetAfterDrag=false;
-    but->textureID="ecke";
-    but->parent=this;
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-    but= new AssignButton;
-    but->name="ecke3c";
-    but->bDrawName=true;
-    but->bDragable=true;
-    but->tooltip="drag Me!";
-    but->setLocation(Vector3f(xC[2]+1000-16,yC[2]-16,0));
-    but->scale=eckScale;
-    but->color=eckColor;
-    but->bTriggerWhileDragging=true;
-    but->bResetAfterDrag=false;
-    but->textureID="ecke";
-    but->parent=this;
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-    but= new AssignButton;
-    but->name="ecke4c";
-    but->bDrawName=true;
-    but->bDragable=true;
-    but->tooltip="drag Me!";
-    but->setLocation(Vector3f(xC[3]+1000-16,yC[3]-16,0));
-    but->scale=eckScale;
-    but->color=eckColor;
-    but->bTriggerWhileDragging=true;
-    but->bResetAfterDrag=false;
-    but->textureID="ecke";
-    but->parent=this;
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-
-
-
-    //anderes
-
-    but= new TextInputButton();
-    but->name="threshold";
-    but->buttonProperty="THRESHOLD";
-    but->bDrawName=true;
-    but->tooltip="";
-    but->setLocation(Vector3f(500,700,0));
-    but->scale.x=130;
-    but->scale.y=20;
-    but->textureID="icon_flat";
-    but->parent=this;
-    but->color=Vector4f(0.5,0.5,0.5,1.0);
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-    but= new TextInputButton();
-    but->name="transformX";
-    but->buttonProperty="XP";
-    but->bDrawName=true;
-    but->tooltip="";
-    but->setLocation(Vector3f(500,730,0));
-    but->scale.x=130;
-    but->scale.y=12;
-    but->textureID="icon_flat";
-    but->parent=this;
-    but->color=Vector4f(0.5,0.5,0.5,1.0);
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-    but= new TextInputButton();
-    but->name="transformY";
-    but->buttonProperty="YP";
-    but->bDrawName=true;
-    but->tooltip="";
-    but->setLocation(Vector3f(500,750,0));
-    but->scale.x=130;
-    but->scale.y=12;
-    but->textureID="icon_flat";
-    but->parent=this;
-    but->color=Vector4f(0.5,0.5,0.5,1.0);
-    but->setup();
-    renderer->buttonList.push_back(but);
-
-
-    slBut= new SliderButton();
-    slBut->name="thresholdSlider";
-    slBut->bDrawName=false;
-    slBut->tooltip="set kinect distance";
-    slBut->setLocation(Vector3f(600,620,0));
-    slBut->scale.x=320;
-    slBut->scale.y=16;
-    slBut->bVertical=false;
-    slBut->textureID="icon_flat";
-    slBut->color=Vector4f(0.5,0.5,0.5,1.0);
-    slBut->parent=this;
-    slBut->setup();
-    slBut->sliderValue=threshold/255.0;
-    renderer->buttonList.push_back(slBut);
-}
 //--------------------------------------------------------------
 void testApp::update(){
 
@@ -320,9 +164,28 @@ void testApp::update(){
     rgbaFbo.end();
 
     ocvImage.setFromPixels(kinect.depthPixels, 640,480);
-    ocvImage.threshold(threshold,true);
-    contourFinder.findContours(ocvImage,1000,200000,3,false,true);
 
+    //das eine minus das andere - wie geht?
+    //ocvImage.absDiff(ocvDiff); // so gehts! - nee, so gehts nich
+    //sondern:
+    pixelBufferOne=ocvImage.getPixels();
+    pixelBufferTwo=ocvDiff.getPixels();
+
+    for (int i=0;i<640*480;i++){
+        if (pixelBufferOne[i]-pixelBufferTwo[i]<0)
+            pixelBufferThree[i]=pixelBufferOne[i];
+        else{
+            if (bInvertMask)
+                pixelBufferThree[i]=0;
+            else
+                pixelBufferThree[i]=255;
+        }
+    }
+
+    ocvImage.setFromPixels(pixelBufferThree,640,480);
+
+    //ocvImage.threshold(threshold,true);
+    contourFinder.findContours(ocvImage,1000,200000,3,false,true);
     for(int i = 0; i < contourFinder.nBlobs; i++) {
         mX=contourFinder.blobs[i].centroid.x *(1280.0f/640.0f);
         mY=contourFinder.blobs[i].centroid.y *(800.0/480.0f);
@@ -339,7 +202,7 @@ void testApp::drawGrid(){
     ofSetHexColor(0xffffff);
     ofNoFill();
     ofSetCircleResolution(128);
-    ofSetLineWidth(3.5);
+    ofSetLineWidth(lineWidth);
     //ofCircle(mX,mY,200);
 
     for(int grY=0; grY<=800; grY+=128){
@@ -355,14 +218,14 @@ void testApp::drawFill(int x, int y){
 
     ofSetHexColor(0xffffff);
     ofFill();
-    ofSetLineWidth(3.5);
+    ofSetLineWidth(lineWidth);
     ofRect(x,y,128,128);
 
 }
 
 void testApp::draw(){
 
-    ofClear(128,128,128,255);
+    ofClear(0,0,0,255);
     ofNoFill();
 
     //glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, slBut->sliderValue * 10.0);
@@ -370,18 +233,19 @@ void testApp::draw(){
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
 
-    stageImage.draw(1920,0);
+    stageImage.draw(mainW,0);
     //kinect.draw(1920,0);
 
     ofEnableAlphaBlending();
 
-    ofSetHexColor(0xffff00);
-    ofRect(100,400,320,200);
 
     ofPushMatrix();
 
+        ofSetHexColor(0xffff00);
+        ofRect(100,800,320,200);
+
         ofSetHexColor(0xffffff);
-        ofTranslate(100,400,0);
+        ofTranslate(100,800,0);
         ofScale(0.25,0.25,0.25);
         rgbaFbo.draw(0,0);
 
@@ -400,12 +264,18 @@ void testApp::draw(){
 
     ofPopMatrix();
 
+            //was passiert hier eigentlich?
 
+    //Draw Camera and Camtransform
+
+    ocvDiff.draw(1000,500);
+
+    kinect.drawDepth(1000,0);
+
+
+            //do das crazy Mathematics
 
             ofPushMatrix();
-            kinect.draw(1000,500);
-
-            kinect.drawDepth(1000,0);
 
             ofPoint dstC[]={ofPoint(0,0),ofPoint(640,0),ofPoint(640,480),ofPoint(0,480)};
             ofPoint srcC[]={ofPoint(xC[0],yC[0]),ofPoint(xC[1],yC[1]),ofPoint(xC[2],yC[2]),ofPoint(xC[3],yC[3])};
@@ -416,82 +286,94 @@ void testApp::draw(){
             glMultMatrixf(matrixC);
 
             //ofSetColor(1.0,0.0,0.0,0.5);
-            kinect.drawDepth(0,0);
-
-            ofPoint src[]={ofPoint(0,0),ofPoint(1280,0),ofPoint(1280,800),ofPoint(0,800)};
-            ofPoint dst[]={ofPoint(xP[0],yP[0]),ofPoint(xP[1],yP[1]),ofPoint(xP[2],yP[2]),ofPoint(xP[3],yP[3])};
-
-
-            GLfloat matrix[16];
-            findHomography(src,dst,matrix);
-            glMultMatrixf(matrix);
             //kinect.drawDepth(0,0);
 
             ofPopMatrix();
 
 
+    //DRAW ALL TEH GRIDZ!!!11!
+
+
+    //Draw first Projection Grid
     ofPushMatrix();
 
+        //Draw tiny red rectangle in which we draw first Projection Grid
         ofSetHexColor(0xff0000);
         ofRect(100,100,320,200);
 
         ofTranslate(100,100,0);
         ofScale(0.25,0.25,0.25);
 
+
         ofPushMatrix();
 
-            //ofPoint src[]={ofPoint(0,0),ofPoint(1280,0),ofPoint(1280,800),ofPoint(0,800)};
-            //ofPoint dst[]={ofPoint(xP[0],yP[0]),ofPoint(xP[1],yP[1]),ofPoint(xP[2],yP[2]),ofPoint(xP[3],yP[3])};
+            //do das crazy Mathematics
+            ofPoint src[]={ofPoint(0,0),ofPoint(1280,0),ofPoint(1280,800),ofPoint(0,800)};
+            ofPoint dst[]={ofPoint(xP[0],yP[0]),ofPoint(xP[1],yP[1]),ofPoint(xP[2],yP[2]),ofPoint(xP[3],yP[3])};
 
-
-            //GLfloat matrix[16];
+            GLfloat matrix[16];
             findHomography(src,dst,matrix);
             glMultMatrixf(matrix);
-            ofSetColor(255,255,255);
+            ofSetHexColor(0xffffff);
 
-            //ofFill();		// draw "filled shapes"
-            //beginImage.draw(0,0,1280,800);
             rgbaFbo.draw(0,0);
+
+        ofPopMatrix();
+    ofPopMatrix();
+
+    //Draw second Projection Grid
+    ofPushMatrix();
+
+        //Draw tiny red rectangle in which we draw second Projection Grid
+        ofSetHexColor(0xff0000);
+        ofRect(100,500,320,200);
+
+        ofTranslate(100,500,0);
+        ofScale(0.25,0.25,0.25);
+
+        //do das crazy Mathematics
+        ofPushMatrix();
+
+            ofPoint srcP2[]={ofPoint(0,0),ofPoint(1280,0),ofPoint(1280,800),ofPoint(0,800)};
+            ofPoint dstP2[]={ofPoint(xP2[0],yP2[0]),ofPoint(xP2[1],yP2[1]),ofPoint(xP2[2],yP2[2]),ofPoint(xP2[3],yP2[3])};
+
+
+            GLfloat matrixP2[16];
+            findHomography(srcP2,dstP2,matrixP2);
+            glMultMatrixf(matrixP2);
+            ofSetHexColor(0xffffff);
+
+            rgbaFbo.draw(0,0);
+
         ofPopMatrix();
 
     ofPopMatrix();
 
     ofPushMatrix();
-        ofTranslate(1920,0);
 
+        //draw final translated first Grid
+        ofTranslate(mainW,0);//main monitor resolution
         ofPushMatrix();
             glMultMatrixf(matrix);
             ofSetColor(255,255,255);
             rgbaFbo.draw(0,0);
         ofPopMatrix();
+
+        //draw final translated second Grid
+        ofTranslate(firstW,0); //first additional screen resolution
+        ofPushMatrix();
+            glMultMatrixf(matrixP2);
+            ofSetColor(255,255,255);
+            rgbaFbo.draw(0,0);
+        ofPopMatrix();
+
+
     ofPopMatrix();
 
     renderer->backgroundColor.a=0;
 
     renderer->draw();
 
-/*
-
-    //second Screen
-
-    glPushMatrix();
-
-    //ofTranslate(3200,0,0);
-    //ofPoint src2[]={ofPoint(0,0),ofPoint(1280,0),ofPoint(1280,800),ofPoint(0,800)};
-    //ofPoint dst2[]={ofPoint(xP[0],yP[0]),ofPoint(xP[1],yP[1]),ofPoint(xP[2],yP[2]),ofPoint(xP[3],yP[3])};
-    //ofPoint dst2[]={ofPoint(53,26),ofPoint(1193,42),ofPoint(1186,794),ofPoint(32,790)};
-
-
-
-    GLfloat matrix2[16];
-    //findHomography(src2,dst2,matrix2);
-    //glMultMatrixf(matrix2);
-    ofSetColor(255,255,255);
-
-    //drawing second screen goes here...
-
-    glPopMatrix();
-*/
 }
 
 void testApp::trigger(Actor* other){
@@ -513,26 +395,72 @@ void testApp::trigger(Actor* other){
         slBut->sliderValue=threshold/255.0;
     }
 
+    if (other->name=="erode" ||other->name=="dilate" ||other->name=="blur"){
+
+        ocvDiff.setFromPixels(ocvMask.getPixels(),640,480);
+
+        for (int i=0;i<dilateAmount; i++)
+            ocvDiff.dilate();
+
+        for (int i=0;i<erodeAmount; i++)
+            ocvDiff.erode();
+
+        ocvDiff.blurGaussian(blurAmount);
+    }
+
+    //erstes Projektionsgrid
 
     if (other->name=="ecke1"){
-        xP[0]=other->location.x-1920+16;
+        xP[0]=other->location.x-mainW+16;
         yP[0]=other->location.y+16;
     }
 
     if (other->name=="ecke2"){
-        xP[1]=other->location.x-1920+16;
+        xP[1]=other->location.x-mainW+16;
         yP[1]=other->location.y+16;
     }
 
     if (other->name=="ecke3"){
-        xP[2]=other->location.x-1920+16;
+        xP[2]=other->location.x-mainW+16;
         yP[2]=other->location.y+16;
     }
 
     if (other->name=="ecke4"){
-        xP[3]=other->location.x-1920+16;
+        xP[3]=other->location.x-mainW+16;
         yP[3]=other->location.y+16;
     }
+
+
+    //zweites Projektionsgrid
+
+    if (other->name=="eckeB1"){
+        xP2[0]=other->location.x-(mainW+firstW)+16;
+        yP2[0]=other->location.y+16;
+        cout << "yeah!" << endl;
+    }
+
+    if (other->name=="eckeB2"){
+        xP2[1]=other->location.x-(mainW+firstW)+16;
+        yP2[1]=other->location.y+16;
+    }
+
+    if (other->name=="eckeB3"){
+        xP2[2]=other->location.x-(mainW+firstW)+16;
+        yP2[2]=other->location.y+16;
+    }
+
+    if (other->name=="eckeB4"){
+        xP2[3]=other->location.x-(mainW+firstW)+16;
+        yP2[3]=other->location.y+16;
+    }
+
+
+
+
+
+
+
+    //Kameragrid
 
     if (other->name=="ecke1c"){
         xC[0]=other->location.x-1000+16;
@@ -555,6 +483,7 @@ void testApp::trigger(Actor* other){
     }
 
 
+
 }
 
 //--------------------------------------------------------------
@@ -572,23 +501,28 @@ void testApp::keyReleased(int key){
         return;
 
     if (key=='1'){
-        xP[0]=mouseX-1920;
+        xP[0]=mouseX-mainW;
         yP[0]=mouseY;
     }
 
     if (key=='2'){
-        xP[1]=mouseX-1920;
+        xP[1]=mouseX-mainW;
         yP[1]=mouseY;
     }
 
     if (key=='3'){
-        xP[2]=mouseX-1920;
+        xP[2]=mouseX-mainW;
         yP[2]=mouseY;
     }
 
     if (key=='4'){
-        xP[3]=mouseX-1920;
+        xP[3]=mouseX-mainW;
         yP[3]=mouseY;
+    }
+
+    if (key=='m'){
+        ocvMask.setFromPixels(kinect.depthPixels, 640,480);
+        ocvDiff.setFromPixels(ocvMask.getPixels(),640,480);
     }
 
 }
@@ -743,4 +677,325 @@ void testApp::loadSettings(){
         load(element);
         listPos++;
         }
+}
+
+
+
+void testApp::interfaceSetup(){
+    //Adding MSB content
+    BasicButton *but;
+
+    cornerSetup();
+
+    //anderes
+
+
+    but= new TextInputButton();
+    but->name="threshold";
+    but->buttonProperty="THRESHOLD";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(500,700,0));
+    but->scale.x=130;
+    but->scale.y=20;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="lineWidth";
+    but->buttonProperty="LINEWIDTH";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(700,700,0));
+    but->scale.x=130;
+    but->scale.y=20;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="transformX";
+    but->buttonProperty="XP";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(500,730,0));
+    but->scale.x=130;
+    but->scale.y=12;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="transformY";
+    but->buttonProperty="YP";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(500,750,0));
+    but->scale.x=130;
+    but->scale.y=12;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="dilate";
+    but->buttonProperty="DILATEAMOUNT";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(500,790,0));
+    but->scale.x=130;
+    but->scale.y=12;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="erode";
+    but->buttonProperty="ERODEAMOUNT";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(500,810,0));
+    but->scale.x=130;
+    but->scale.y=12;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="blur";
+    but->buttonProperty="BLURAMOUNT";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(500,830,0));
+    but->scale.x=130;
+    but->scale.y=12;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+
+    slBut= new SliderButton();
+    slBut->name="thresholdSlider";
+    slBut->bDrawName=false;
+    slBut->tooltip="set kinect distance";
+    slBut->setLocation(Vector3f(600,620,0));
+    slBut->scale.x=320;
+    slBut->scale.y=16;
+    slBut->bVertical=false;
+    slBut->textureID="icon_flat";
+    slBut->color=Vector4f(0.5,0.5,0.5,1.0);
+    slBut->parent=this;
+    slBut->setup();
+    slBut->sliderValue=threshold/255.0;
+    renderer->buttonList.push_back(slBut);
+}
+
+
+void testApp::cornerSetup(){
+
+    BasicButton *but;
+
+    //eckKnoepfe
+    Vector3f eckScale=Vector3f(32,32,1);
+    Vector4f eckColor=Vector4f(1,1,1,1.0);
+
+        //corners
+    but= new AssignButton;
+    but->name="ecke1";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xP[0]+mainW-16,yP[0]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="ecke2";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xP[1]+mainW-16,yP[1]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="ecke3";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xP[2]+mainW-16,yP[2]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="ecke4";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xP[3]+mainW-16,yP[3]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    //projector2
+    but= new AssignButton;
+    but->name="eckeB1";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xP2[0]+mainW+firstW-16,yP2[0]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="eckeB2";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xP2[1]+mainW+firstW-16,yP2[1]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="eckeB3";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xP2[2]+mainW+firstW-16,yP2[2]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="eckeB4";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xP2[3]+mainW+firstW-16,yP2[3]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+
+// camera Corners
+    but= new AssignButton;
+    but->name="ecke1c";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xC[0]+1000-16,yC[0]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="ecke2c";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xC[1]+1000-16,yC[1]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="ecke3c";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xC[2]+1000-16,yC[2]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new AssignButton;
+    but->name="ecke4c";
+    but->bDrawName=true;
+    but->bDragable=true;
+    but->tooltip="drag Me!";
+    but->setLocation(Vector3f(xC[3]+1000-16,yC[3]-16,0));
+    but->scale=eckScale;
+    but->color=eckColor;
+    but->bTriggerWhileDragging=true;
+    but->bResetAfterDrag=false;
+    but->textureID="ecke";
+    but->parent=this;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
 }

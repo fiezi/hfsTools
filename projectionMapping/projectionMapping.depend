@@ -2106,3 +2106,498 @@
 	"ofTypes.h"
 	"Poco/Condition.h"
 
+1377501507 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\actor.cpp
+	<sstream>
+	"actor.h"
+	"input.h"
+	"interpolationHelper.h"
+	"renderer.h"
+	"node.h"
+	"meshData.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\actor.h
+	"includes.h"
+	"tinyxml.h"
+
+1377501781 c:\of_v0.8.0_win_cb_release\addons\msbofcore\includes.h
+	"shlobj.h"
+	"windows.h"
+	"ofMain.h"
+	"vmath.h"
+	"glut.h"
+	"FreeImage.h"
+	<typeinfo>
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\vmath\vmath.h
+	<cmath>
+	<cstring>
+	<iostream>
+	<cassert>
+
+1376284386 c:\of_v0.8.0_win_cb_release\libs\glut\include\glut.h
+	<windows.h>
+	<GL/gl.h>
+	<GL/glu.h>
+
+1376284376 c:\of_v0.8.0_win_cb_release\libs\freeimage\include\freeimage.h
+	<wchar.h>
+	<inttypes.h>
+
+1376284364 c:\of_v0.8.0_win_cb_release\addons\ofxxmlsettings\libs\tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<string>
+	<iostream>
+	<sstream>
+	"tinystr.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\input.h
+	"includes.h"
+	"actor.h"
+	"renderer.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\renderer.h
+	"includes.h"
+	"layer.h"
+	"basicButton.h"
+	"textfile.h"
+	"msbLight.h"
+	"node.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\layer.h
+	"basicButton.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\basicbutton.h
+	"actor.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\textfile.h
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msblight.h
+	"actor.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\node.h
+	"listButton.h"
+	"nodeIO.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\listbutton.h
+	"basicButton.h"
+	"sliderButton.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\sliderbutton.h
+	"basicButton.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\nodeio.h
+	"basicButton.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\interpolationhelper.h
+	"actor.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\meshdata.h
+	"actor.h"
+	"renderer.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\basicbutton.cpp
+	"basicButton.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\boneactor.cpp
+	"skeletalDrawing.h"
+	"boneActor.h"
+	"renderer.h"
+	"input.h"
+	"meshData.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\skeletaldrawing.h
+	"particleSystem.h"
+	"boneActor.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\particlesystem.h
+	"includes.h"
+	"actor.h"
+	"textfile.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\boneactor.h
+	"actor.h"
+	"particleSystem.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\colladaloader.cpp
+	"colladaLoader.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\colladaloader.h
+	"includes.h"
+	"renderer.h"
+	"meshData.h"
+
+1377507569 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\input.cpp
+	"input.h"
+	"basicButton.h"
+	"listButton.h"
+	"interpolationHelper.h"
+	"textInputButton.h"
+	"assignButton.h"
+	"userPopUp.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\textinputbutton.h
+	"basicButton.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\assignbutton.h
+	<basicButton.h>
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\userpopup.h
+	"textInputButton.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\interpolationhelper.cpp
+	"interpolationHelper.h"
+	"skeletalActor.h"
+	"renderer.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\skeletalactor.h
+	"skeletalDrawing.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\layer.cpp
+	"layer.h"
+	"renderer.h"
+	"input.h"
+	"msbLight.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\meshdata.cpp
+	"meshData.h"
+	"renderer.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\assignbutton.cpp
+	"assignButton.h"
+	"renderer.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\listbutton.cpp
+	"listButton.h"
+	"renderer.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\movebutton.cpp
+	"moveButton.h"
+	"input.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\movebutton.h
+	"rotateButton.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\rotatebutton.h
+	"basicButton.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\rotatebutton.cpp
+	"rotateButton.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\sliderbutton.cpp
+	"sliderButton.h"
+	"renderer.h"
+	"input.h"
+
+1394728678 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\textinputbutton.cpp
+	"textInputButton.h"
+	"renderer.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbbuttons\userpopup.cpp
+	"userPopUp.h"
+	"renderer.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\msblight.cpp
+	"msbLight.h"
+	"renderer.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\node.cpp
+	"node.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\nodeio.cpp
+	"nodeIO.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\particlesystem.cpp
+	"particleSystem.h"
+	"input.h"
+	"meshData.h"
+
+1394731621 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\renderer.cpp
+	"input.h"
+	"spriteMeshLoader.h"
+	"colladaLoader.h"
+	"msbLight.h"
+	"listButton.h"
+	"sliderButton.h"
+	"userPopUp.h"
+	"assignButton.h"
+	"textInputButton.h"
+	"moveButton.h"
+	"rotateButton.h"
+	"node.h"
+	"layer.h"
+	"meshData.h"
+	<Commdlg.h>
+	<stdio.h>
+	<conio.h>
+	<tchar.h>
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\spritemeshloader.h
+	"includes.h"
+	"skeletalDrawing.h"
+	"meshData.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\skeletalactor.cpp
+	"skeletalActor.h"
+	"renderer.h"
+	"input.h"
+	"boneActor.h"
+	"meshData.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\skeletaldrawing.cpp
+	"skeletalDrawing.h"
+	"renderer.h"
+	"boneActor.h"
+	"skeletalActor.h"
+	"spriteMeshLoader.h"
+	"input.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\spritemeshloader.cpp
+	"spriteMeshLoader.h"
+	"renderer.h"
+	"input.h"
+	"base64Encode.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\base64encode.h
+	"includes.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\textfile.cpp
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\tinyxml\tinyxml.cpp
+	<ctype.h>
+	<sstream>
+	<iostream>
+	"tinyxml.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\tinyxml\tinyxml.h
+	<ctype.h>
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<assert.h>
+	<string>
+	<iostream>
+	<sstream>
+	"tinystr.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\tinyxml\tinyxmlerror.cpp
+	"tinyxml.h"
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\tinyxml\tinyxmlparser.cpp
+	<ctype.h>
+	<stddef.h>
+	"tinyxml.h"
+	<windows.h>
+
+1377118826 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\vmath\vmath.cpp
+	"vmath.h"
+
+1377503920 source:c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\ofxkinect.cpp
+	"ofxKinect.h"
+	"ofMain.h"
+
+1377503684 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\ofxkinect.h
+	"ofConstants.h"
+	"ofTexture.h"
+	"ofImage.h"
+	"ofGraphics.h"
+	"ofTypes.h"
+	"ofMain.h"
+	<XnOpenNI.h>
+	<XnLog.h>
+	<XnCodecIDs.h>
+	<XnCppWrapper.h>
+	<XnFPSCalculator.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnopenni.h
+	"XnTypes.h"
+	"XnContext.h"
+	"XnLicensing.h"
+	"XnUtils.h"
+	"XnPrdNodeInfo.h"
+	"XnQueries.h"
+	"XnPrdNode.h"
+	"XnEnumerationErrors.h"
+	"XnVersion.h"
+	"XnStatusCodes.h"
+	"XnStatus.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xntypes.h
+	<XnStatus.h>
+	<XnOS.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnstatus.h
+	"XnPlatform.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnplatform.h
+	"Win32/XnPlatformWin32.h"
+	"Android-Arm/XnPlatformAndroid-Arm.h"
+	"Linux-x86/XnPlatformLinux-x86.h"
+	"Linux-Arm/XnPlatformLinux-Arm.h"
+	"ARC/XnPlatformARC.h"
+	"MacOSX/XnPlatformMacOSX.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\win32\xnplatformwin32.h
+	<windows.h>
+	<stdlib.h>
+	<stdio.h>
+	<malloc.h>
+	<io.h>
+	<time.h>
+	<assert.h>
+	<float.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\linux-x86\xnplatformlinux-x86.h
+	<unistd.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<assert.h>
+	<limits.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\linux-arm\xnplatformlinux-arm.h
+	"../Linux-x86/XnPlatformLinux-x86.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\macosx\xnplatformmacosx.h
+	"../Linux-x86/XnPlatformLinux-x86.h"
+	<sys/time.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnos.h
+	"XnPlatform.h"
+	"XnMacros.h"
+	"XnStatusCodes.h"
+	"XnOSStrings.h"
+	"XnOSMemory.h"
+	"Win32/XnOSWin32.h"
+	"Linux-x86/XnOSLinux-x86.h"
+	"ARC/XnOSARC.h"
+	<new>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnmacros.h
+	"XnStatusCodes.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnstatuscodes.h
+	"XnStatus.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnosstrings.h
+	"XnPlatform.h"
+	<stdarg.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnosmemory.h
+	"XnPlatform.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\win32\xnoswin32.h
+	<XnPlatform.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\linux-x86\xnoslinux-x86.h
+	<sys/types.h>
+	<stdarg.h>
+	<time.h>
+	<pthread.h>
+	<sys/stat.h>
+	<fcntl.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xncontext.h
+	<XnTypes.h>
+	<XnQueries.h>
+	<XnPrdNodeInfoList.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnqueries.h
+	"XnTypes.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnprdnodeinfolist.h
+	<XnTypes.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnlicensing.h
+	<XnTypes.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnutils.h
+	<XnTypes.h>
+	<XnModuleInterface.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnmoduleinterface.h
+	<XnTypes.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnprdnodeinfo.h
+	<XnTypes.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnprdnode.h
+	<XnTypes.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnenumerationerrors.h
+	<XnTypes.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnversion.h
+	"XnPlatform.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnlog.h
+	"XnOS.h"
+	"XnLogTypes.h"
+	"XnDump.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnlogtypes.h
+	"XnPlatform.h"
+	"XnTypes.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xndump.h
+	"XnPlatform.h"
+	"XnStatus.h"
+	"XnOS.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xncodecids.h
+	"XnTypes.h"
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xncppwrapper.h
+	<XnOpenNI.h>
+	<XnCodecIDs.h>
+
+1377118845 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\openni\include\xnfpscalculator.h
+	<XnPlatform.h>
+	<XnStatus.h>
+
+1376284412 source:c:\of_v0.8.0_win_cb_release\apps\hfstools\projectionmapping\icon.rc
+
+1394734618 source:c:\of_v0.8.0_win_cb_release\apps\hfstools\projectionmapping\src\main.cpp
+	"ofMain.h"
+	"testApp.h"
+	"ofAppGlutWindow.h"
+
+1395002802 c:\of_v0.8.0_win_cb_release\apps\hfstools\projectionmapping\src\testapp.h
+	"ofxOpenCv.h"
+	"ofxKinect.h"
+	"ofMain.h"
+	"msbOFCore.h"
+	"actor.h"
+	"basicButton.h"
+	"textInputButton.h"
+	"assignButton.h"
+	"sliderButton.h"
+
+1377118826 c:\of_v0.8.0_win_cb_release\addons\msbofcore\msbofcore.h
+	"renderer.h"
+	"input.h"
+
+1376284386 c:\of_v0.8.0_win_cb_release\libs\openframeworks\app\ofappglutwindow.h
+	"ofConstants.h"
+	"ofAppBaseWindow.h"
+	"ofEvents.h"
+	"ofTypes.h"
+	"ofPixels.h"
+
+1395002848 source:c:\of_v0.8.0_win_cb_release\apps\hfstools\projectionmapping\src\testapp.cpp
+	"testApp.h"
+

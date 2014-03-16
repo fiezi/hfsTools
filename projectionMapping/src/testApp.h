@@ -16,7 +16,7 @@
 
 // Uncomment this to use a camera instead of a video file
 #define CAMERA_CONNECTED
-#define SCREENRESX 1920+1280
+#define SCREENRESX 1920+1920+1280
 #define SCREENRESY 1080
 
 struct actorID;
@@ -33,6 +33,9 @@ class testApp : public ofBaseApp, public Actor{
 		void draw();
 
 		void interfaceSetup();
+
+		void cornerSetup();
+
 		//from msbOFCore
 		void msbSetup();
 		void registerProperties();
@@ -66,20 +69,46 @@ class testApp : public ofBaseApp, public Actor{
         Vector4f xP;
         Vector4f yP;
 
+        Vector4f xP2;
+        Vector4f yP2;
+
         Vector4f xC;
         Vector4f yC;
 
         int mX;
         int mY;
 
+        //Resolution second & third "window"
+        int mainW;
+        int mainH;
+        int firstW;
+        int firstH;
+        int secondW;
+        int secondH;
+
         //Kinect stuff from here
 
         ofxKinect kinect;
 
         ofxCvGrayscaleImage ocvImage;
+        ofxCvGrayscaleImage ocvMask;
+        ofxCvGrayscaleImage ocvDiff;
+
         ofxCvContourFinder contourFinder;
 
+        unsigned char*               pixelBufferOne;
+        unsigned char*               pixelBufferTwo;
+        unsigned char*               pixelBufferThree;
+
         int threshold;
+        float lineWidth;
+
+        int dilateAmount;
+        int erodeAmount;
+        int blurAmount;
+
+        bool bInvertMask;
+
         SliderButton* slBut;
 };
 
