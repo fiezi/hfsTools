@@ -25,7 +25,7 @@
 		-->
 		<Node type="Depth" name="Depth1">
 			<Configuration>
-				<Mirror on="true"/>
+				<Mirror on="false"/>
 			</Configuration>
 		</Node>
 	  

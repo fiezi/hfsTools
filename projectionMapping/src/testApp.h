@@ -18,6 +18,8 @@
 #define CAMERA_CONNECTED
 #define SCREENRESX 1920+1920+1280
 #define SCREENRESY 1080
+#define MAXPUPPE 10
+#define TRACKBUFFER 30
 
 struct actorID;
 struct memberID;
@@ -35,16 +37,24 @@ class testApp : public ofBaseApp, public Actor{
 		void interfaceSetup();
 
 		void cornerSetup();
+		void connectSetup();
 
 		//from msbOFCore
 		void msbSetup();
 		void registerProperties();
 		void trigger(Actor* other);
+		void checkConnections(Actor* other);
         void loadSettings();
 
+        void trackPoints();
+        void applyMask();
+        void accumulateImage();
+        void accumulateMask();
+        void postProcessMask();
 
         void drawGrid();
         void drawFill(int x, int y);
+        void drawConnect(int x1, int y1, int x2, int y2);
 
 		void findHomography(ofPoint src[4], ofPoint dst[4], float homography[16]);
 		void gaussian_elimination(float *input, int n);
@@ -91,15 +101,20 @@ class testApp : public ofBaseApp, public Actor{
         int secondW;
         int secondH;
 
+        int currentFrame;
+
         //Kinect stuff from here
 
         ofxKinect kinect;
 
+        ofxCvGrayscaleImage ocvBufferedImage;
         ofxCvGrayscaleImage ocvImage;
         ofxCvGrayscaleImage ocvMask;
         ofxCvGrayscaleImage ocvDiff;
 
         ofxCvContourFinder contourFinder;
+
+        ofVideoPlayer   mockup;
 
         unsigned char*               pixelBufferOne;
         unsigned char*               pixelBufferTwo;
@@ -107,12 +122,27 @@ class testApp : public ofBaseApp, public Actor{
 
         int threshold;
         float lineWidth;
+        float rectSize;
+        float trackDistance;
 
         int dilateAmount;
         int erodeAmount;
         int blurAmount;
 
+        int imageBuffer;
+
+        int selectedPoint;
+
         bool bInvertMask;
+        bool bDrawGrid;
+        bool bAccumulateMask;
+        bool bMockup;
+
+        //Vector3f trackPoint[MAXPUPPE];
+        vector<Vector3f> trackPointBuffer[MAXPUPPE];
+        vector<BasicButton*>  connectors;
+        vector<BasicButton*>  connected;
+
 
         SliderButton* slBut;
 };

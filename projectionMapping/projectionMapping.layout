@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="debug" />
-	<File name="..\..\..\addons\msbOFCore\vMath\vmath.h" open="1" top="0" tabpos="4">
-		<Cursor position="872" topLine="137" />
+	<File name="..\..\..\addons\msbOFCore\msbButtons\assignButton.cpp" open="1" top="0" tabpos="6">
+		<Cursor position="353" topLine="21" />
+	</File>
+	<File name="..\..\..\addons\msbOFCore\vMath\vmath.h" open="1" top="0" tabpos="3">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h" open="1" top="0" tabpos="5">
+		<Cursor position="0" topLine="0" />
+	</File>
+	<File name="..\..\..\addons\ofxOpenCv\src\ofxCvContourFinder.h" open="1" top="0" tabpos="4">
+		<Cursor position="0" topLine="0" />
 	</File>
 	<File name="src\testApp.cpp" open="1" top="1" tabpos="1">
-		<Cursor position="4131" topLine="133" />
+		<Cursor position="5059" topLine="7" />
 	</File>
 	<File name="src\testApp.h" open="1" top="0" tabpos="2">
-		<Cursor position="1608" topLine="59" />
+		<Cursor position="1171" topLine="47" />
 	</File>
 </CodeBlocks_layout_file>

@@ -21,23 +21,30 @@ testApp::~testApp(){
 
 void testApp::setup(){
 
-    xP[0]=0;
-    xP[1]=1280;
-    xP[2]=1280;
-    xP[3]=0;
-    yP[0]=0;
-    yP[1]=0;
-    yP[2]=800;
-    yP[3]=800;
+    //ofSetFrameRate(25);
 
-    xP2[0]=0;
-    xP2[1]=1280;
-    xP2[2]=1280;
-    xP2[3]=0;
-    yP2[0]=0;
-    yP2[1]=0;
-    yP2[2]=800;
-    yP2[3]=800;
+
+    int offsetX=300;
+    int offsetY=300;
+
+
+    xP[0]=0+offsetX;
+    xP[1]=1280.0-offsetX;
+    xP[2]=1280-offsetX;
+    xP[3]=0+offsetX;
+    yP[0]=0+offsetY;
+    yP[1]=0+offsetY;
+    yP[2]=800-offsetY;
+    yP[3]=800-offsetY;
+
+    xP2[0]=0+offsetX;
+    xP2[1]=1280-offsetX;
+    xP2[2]=1280-offsetX;
+    xP2[3]=0+offsetX;
+    yP2[0]=0+offsetY;
+    yP2[1]=0+offsetY;
+    yP2[2]=800-offsetY;
+    yP2[3]=800-offsetY;
 
     xC[0]=0;
     xC[1]=640;
@@ -48,17 +55,21 @@ void testApp::setup(){
     yC[2]=480;
     yC[3]=480;
 
+    currentFrame=0;
+
     mX=0;
     mY=0;
 
     mainW = 1920;
     mainH = 1080;
-    firstW = 1920;
-    firstH = 1080;
+    firstW = 1280;
+    firstH = 800;
     secondW = 1280;
     secondH = 800;
 
     threshold=40;
+    trackDistance=100;
+    imageBuffer=8;
 
     lineWidth=4.0;
 
@@ -66,16 +77,25 @@ void testApp::setup(){
     dilateAmount=0;
     blurAmount=0;
 
-    bInvertMask=true;
+    selectedPoint=0;
 
+    bAccumulateMask=false;
+    bInvertMask=true;
+    bDrawGrid=true;
+
+    ocvBufferedImage.allocate(640,480);
     ocvImage.allocate(640,480);
     ocvMask.allocate(640,480);
     ocvDiff.allocate(640,480);
+
+    ocvDiff.set(255);
+    ocvMask.set(255);
 
     kinect.bImage = true;
     kinect.init();
     kinect.setVerbose(true);
     kinect.open();
+    kinect.cutOffFar=8192;
 
 	ofBackground(0,0,64);
 
@@ -83,6 +103,15 @@ void testApp::setup(){
     pixelBufferOne= new unsigned char[640*480];
     pixelBufferTwo= new unsigned char[640*480];
     pixelBufferThree= new unsigned char[640*480];
+
+    //set up tracking buffers
+    //for each Puppet potentially to be tracked
+    for (int i=0;i<MAXPUPPE;i++){
+        //set up a buffer as big as BUFFER
+        for (int b=0;b<TRACKBUFFER;b++){
+            trackPointBuffer[i].push_back(Vector3f(0,0,0));
+        }
+    }
 
 
     //ofSetFrameRate(25);
@@ -101,6 +130,8 @@ void testApp::setup(){
 
     //stage simulation
     stageImage.loadImage("stage.tga");
+    mockup.loadMovie("mockup.mp4");
+
     //stageImage.getTextureReference().texData.textureTarget=GL_TEXTURE_2D;
 
     msbSetup();
@@ -139,15 +170,20 @@ void testApp::registerProperties(){
     createMemberID("XP",&xP,this);
     createMemberID("YP",&yP,this);
 
+    createMemberID("XP2",&xP2,this);
+    createMemberID("YP2",&yP2,this);
+
     createMemberID("XC",&xC,this);
     createMemberID("YC",&yC,this);
 
+    createMemberID("TRACKDISTANCE",&trackDistance,this);
     createMemberID("THRESHOLD",&threshold,this);
     createMemberID("LINEWIDTH",&lineWidth,this);
 
     createMemberID("DILATEAMOUNT",&dilateAmount,this);
     createMemberID("ERODEAMOUNT",&erodeAmount,this);
     createMemberID("BLURAMOUNT",&blurAmount,this);
+    createMemberID("IMAGEBUFFER",&imageBuffer,this);
 
 
 }
@@ -155,15 +191,116 @@ void testApp::registerProperties(){
 //--------------------------------------------------------------
 void testApp::update(){
 
+    rectSize=lineWidth*64;
+
+    currentFrame++;
     kinect.update();
     renderer->update();
+    mockup.update();
 
     rgbaFbo.begin();
         ofClear(0,0,0,0);
-		drawGrid();
+		if (bDrawGrid)
+            drawGrid();
     rgbaFbo.end();
 
-    ocvImage.setFromPixels(kinect.depthPixels, 640,480);
+    if (bAccumulateMask)
+        accumulateMask();
+
+    //buffer image
+    if(currentFrame%imageBuffer==0){
+        //reset image to be accumulated
+        ocvImage.setFromPixels(ocvBufferedImage.getPixels(),640,480);
+        ocvBufferedImage.setFromPixels(kinect.depthPixels,640,480);
+    }else{
+        //build image
+        accumulateImage();
+    }
+
+
+    //do all the stuff all the time
+    applyMask();
+    trackPoints();
+
+}
+
+void testApp::trackPoints(){
+
+    Vector3f trackPoint;
+
+        //debug - use mouse coordinates!
+    /*
+
+        trackPoint.x=mX-1000;
+        trackPoint.y=mY;
+
+        if (trackPointBuffer[0].size()== TRACKBUFFER)
+            trackPointBuffer[0].pop_back();
+
+        trackPointBuffer[0].insert(trackPointBuffer[0].begin(),trackPoint);
+    */
+
+
+    //fill Track Point Buffer
+
+
+    //ocvImage.threshold(threshold,true);
+    contourFinder.findContours(ocvImage,200,200000,MAXPUPPE,false,true);
+    for(int i = 0; i < contourFinder.nBlobs; i++) {
+        mX=contourFinder.blobs[i].centroid.x *(1280.0f/640.0f);
+        mY=contourFinder.blobs[i].centroid.y *(800.0/480.0f);
+
+        //find point that is highest in y
+        float maxim=0;  //maximum y
+        int myMin=0;    //point that is highest in y
+
+        for (int p=0;p<contourFinder.blobs[i].nPts;p++){
+            if (contourFinder.blobs[i].pts[p].y>maxim){
+                    myMin=p;
+                    maxim=contourFinder.blobs[i].pts[p].y;
+            }
+        }
+        trackPoint.x=contourFinder.blobs[i].pts[myMin].x;
+        trackPoint.y=contourFinder.blobs[i].pts[myMin].y;
+        //if we have buffered values, delete the oldest one
+
+        //now we must associate the currently tracked point with the closest point we already have
+
+        //compare location, find closest already tracked point
+
+        float shortestDist=trackDistance;
+
+        int currentlyClosestBuffer=-1;  //set to -1, if it stays there, we probably have a new puppet to track!
+
+        for (int l=0;l<MAXPUPPE;l++){
+            float dist=(trackPoint-trackPointBuffer[l][0]).length();
+            //if we are close to a buffered point, use that one
+            if (dist<shortestDist){
+                currentlyClosestBuffer=l;
+                shortestDist=dist;
+            }
+            //if we happen upon a previously unused buffer, and we have not made a connection with any of the other buffers
+            //and thus will use this one from now!
+            if (trackPointBuffer[l][0].length()==0 && currentlyClosestBuffer==-1){
+                currentlyClosestBuffer=l;
+                shortestDist=0;
+                l=MAXPUPPE; //break out of for-loop
+            }
+        }
+
+        //if we haven't found anything...
+        if (currentlyClosestBuffer>-1){
+            //if we have buffered values, delete the oldest one
+            if (trackPointBuffer[currentlyClosestBuffer].size()== TRACKBUFFER)
+                trackPointBuffer[currentlyClosestBuffer].pop_back();
+            //insert new value into buffer
+            trackPointBuffer[currentlyClosestBuffer].insert(trackPointBuffer[currentlyClosestBuffer].begin(),trackPoint);
+        }
+    }
+}
+
+
+void testApp::applyMask(){
 
     //das eine minus das andere - wie geht?
     //ocvImage.absDiff(ocvDiff); // so gehts! - nee, so gehts nich
@@ -184,22 +321,41 @@ void testApp::update(){
 
     ocvImage.setFromPixels(pixelBufferThree,640,480);
 
-    //ocvImage.threshold(threshold,true);
-    contourFinder.findContours(ocvImage,1000,200000,3,false,true);
-    for(int i = 0; i < contourFinder.nBlobs; i++) {
-        mX=contourFinder.blobs[i].centroid.x *(1280.0f/640.0f);
-        mY=contourFinder.blobs[i].centroid.y *(800.0/480.0f);
 
-        Vector4f myVec=Vector4f(mX,mY,0,0);
-        myVec= cMat* myVec;
+}
 
-        cout << myVec << endl;
+void testApp::accumulateMask(){
 
-        rgbaFbo.begin();
-            //drawFill( (mX/128)*128,(mY/128)*128);
-            drawFill( myVec.x/10.0,myVec.y/10.0);
-        rgbaFbo.end();
+
+pixelBufferOne=kinect.depthPixels;
+pixelBufferTwo=ocvMask.getPixels();
+
+for (int i=0;i<640*480;i++){
+    if (pixelBufferOne[i]<pixelBufferTwo[i]){
+        pixelBufferTwo[i]=pixelBufferOne[i];
     }
+}
+
+
+ocvMask.setFromPixels(pixelBufferTwo, 640,480);
+//ocvDiff.setFromPixels(ocvMask.getPixels(),640,480);
+
+}
+
+
+void testApp::accumulateImage(){
+
+    pixelBufferOne=kinect.depthPixels;
+    pixelBufferTwo=ocvBufferedImage.getPixels();
+
+    for (int i=0;i<640*480;i++){
+        if (pixelBufferOne[i]<pixelBufferTwo[i]){
+            pixelBufferTwo[i]=pixelBufferOne[i];
+        }
+    }
+
+    ocvBufferedImage.setFromPixels(pixelBufferTwo, 640,480);
+    //ocvImage.setFromPixels(kinect.depthPixels, 640,480);
 
 }
 
@@ -218,7 +374,6 @@ void testApp::drawGrid(){
             }
         }
 
-
 }
 
 void testApp::drawFill(int x, int y){
@@ -226,9 +381,20 @@ void testApp::drawFill(int x, int y){
     ofSetHexColor(0xffffff);
     ofFill();
     ofSetLineWidth(lineWidth);
-    ofRect(x,y,128,128);
+    //ofRect(x,y,rectSize,rectSize);
+    ofRect(x-threshold,y-threshold,threshold*2.0,threshold*2.0);
 
 }
+
+void testApp::drawConnect(int x1, int y1, int x2, int y2){
+
+    ofSetHexColor(0xffffff);
+    ofFill();
+    ofSetLineWidth(lineWidth);
+    ofLine(x1,y1,x2,y2);
+
+}
+
 
 void testApp::draw(){
 
@@ -242,7 +408,7 @@ void testApp::draw(){
 
     ofSetLineWidth(1.0);
 
-    stageImage.draw(mainW,0);
+    //stageImage.draw(mainW,0);
     //kinect.draw(1920,0);
 
     ofEnableAlphaBlending();
@@ -277,13 +443,35 @@ void testApp::draw(){
 
     //Draw Camera and Camtransform
 
-    ocvDiff.draw(1000,500);
+    if (bAccumulateMask)
+        ocvMask.draw(1000,500);
+    else
+        ocvDiff.draw(1000,500);
 
-    kinect.drawDepth(1000,0);
+    kinect.draw(1000,0);
+
+
+    //calculate Buffered value
+    Vector3f trackPoint[MAXPUPPE];
+
+    //for all trackPoints
+    for (int i=0;i<MAXPUPPE;i++){
+        //add up all Buffered values
+        for (int b=0;b<TRACKBUFFER;b++){
+            trackPoint[i]+=trackPointBuffer[i][b]/float(TRACKBUFFER);
+        }
+    }
+
+    for (int i=0;i<MAXPUPPE;i++){
+        ofCircle(trackPoint[i].x+1000,trackPoint[i].y,10);
+        char buf[5];
+        sprintf(buf,"%d",i);
+        ofDrawBitmapString(buf,trackPoint[i].x+1000,trackPoint[i].y,10);
+    }
 
     ofPushMatrix();
         ofTranslate(100,100);
-        ofScale(0.25,0.25,1.0);
+        ofScale(0.5,0.5,0.5);
 
             //do das crazy Mathematics
             ofPushMatrix();
@@ -295,11 +483,71 @@ void testApp::draw(){
             glMultMatrixf(cMat);
 
             //ofSetColor(1.0,0.0,0.0,0.5);
-            kinect.drawDepth(0,0);
+            //kinect.drawDepth(0,0);
 
+            for (int i=0;i<MAXPUPPE;i++){
+                ofPushMatrix();
+                ofTranslate(trackPoint[i].x,trackPoint[i].y);
+                ofSetHexColor(0x00ffff);
+                ofCircle(0,0,10);
+                glGetFloatv(GL_MODELVIEW_MATRIX,cMat);
+                trackPoint[i]=cMat.getTranslation()/(cMat[15]*100.0);
+                ofPopMatrix();
+            }
             ofPopMatrix();
 
     ofPopMatrix();
+
+
+    for (int i=0;i<MAXPUPPE;i++){
+
+        ofPushMatrix();
+            ofTranslate(100,100);
+
+            //ofScale(2.0,2.0,2.0);
+            ofSetHexColor(0xffff00);
+            //dem magic numbers!
+            trackPoint[i].x*=50;
+            trackPoint[i].x+=1220;
+            trackPoint[i].y*=50;
+            trackPoint[i].y+=220;
+
+            trackPoint[i]*=2.0;
+
+            ofCircle(trackPoint[i].x,trackPoint[i].y,15);
+
+        ofPopMatrix();
+
+            rgbaFbo.begin();
+                //drawFill( (mX/128)*128,(mY/128)*128);
+                trackPoint[i].x*=4.0;
+                trackPoint[i].y*=3.0;
+                drawFill( trackPoint[i].x, trackPoint[i].y );
+                //draw connections
+                if (connectors[i]->color==Vector4f(0.5,0,0,1)){
+                    for (int j=0;j<MAXPUPPE;j++){
+                        if (connected[j]->color==Vector4f(0,0.5,0,1)){
+                            drawConnect(trackPoint[i].x, trackPoint[i].y,trackPoint[j].x, trackPoint[j].y);
+                        }
+                    }
+                }
+
+
+                //if (i>0)
+                //    ofLine(trackPoint[i].x, trackPoint[i].y,trackPoint[i-1].x, trackPoint[i-1].y  );
+
+                //drawFill( (int(trackPoint.x)/128)*128, (int(trackPoint.y)/128)*128 );
+
+                if (bMockup){
+                        ofRotate(45);
+                    mockup.draw(0,500);
+                }
+
+            rgbaFbo.end();
+    }
+
+
+    ofNoFill();
 
 
     //DRAW ALL TEH GRIDZ!!!11!
@@ -385,6 +633,22 @@ void testApp::draw(){
 
 }
 
+
+void testApp::postProcessMask(){
+
+    ocvDiff.setFromPixels(ocvMask.getPixels(),640,480);
+
+    for (int i=0;i<dilateAmount; i++)
+        ocvDiff.dilate();
+
+    for (int i=0;i<erodeAmount; i++)
+        ocvDiff.erode();
+
+    //ocvDiff.blurGaussian(blurAmount);
+
+
+}
+
 void testApp::trigger(Actor* other){
 
     if (other->name=="thresholdSlider"){
@@ -406,15 +670,7 @@ void testApp::trigger(Actor* other){
 
     if (other->name=="erode" ||other->name=="dilate" ||other->name=="blur"){
 
-        ocvDiff.setFromPixels(ocvMask.getPixels(),640,480);
-
-        for (int i=0;i<dilateAmount; i++)
-            ocvDiff.dilate();
-
-        for (int i=0;i<erodeAmount; i++)
-            ocvDiff.erode();
-
-        ocvDiff.blurGaussian(blurAmount);
+        postProcessMask();
     }
 
     //erstes Projektionsgrid
@@ -491,12 +747,62 @@ void testApp::trigger(Actor* other){
         yC[3]=other->location.y+16;
     }
 
+    checkConnections(other);
+
+}
+
+void testApp::checkConnections(Actor* other){
+
+    //color toggle
+
+    for (int i=0;i<MAXPUPPE;i++){
+        if (other==connected[i]){
+            if (connected[i]->color==Vector4f(0,0.5,0,1)){
+                connected[i]->color=Vector4f(0,0,0.5,1);
+            }else{
+                connected[i]->color=Vector4f(0,0.5,0,1);
+            }
+        }
+    }
+
+    //color toggle
+
+    for (int i=0;i<MAXPUPPE;i++){
+        if (other==connectors[i]){
+            if (connectors[i]->color==Vector4f(0.5,0,0,1)){
+                connectors[i]->color=Vector4f(0.5,0.5,0,1);
+            }else{
+                connectors[i]->color=Vector4f(0.5,0,0,1);
+            }
+        }
+    }
 
 
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
+
+
+        if (key=='w'){
+            xP2[selectedPoint-1]+=0.0;
+            yP2[selectedPoint-1]-=0.5;
+        }
+
+        if (key=='a'){
+            xP2[selectedPoint-1]-=0.5;
+            yP2[selectedPoint-1]-=0.0;
+        }
+
+        if (key=='s'){
+            xP2[selectedPoint-1]-=0.0;
+            yP2[selectedPoint-1]+=0.5;
+        }
+
+        if (key=='d'){
+            xP2[selectedPoint-1]+=0.5;
+            yP2[selectedPoint-1]-=0.0;
+        }
 
 
     input->normalKeyDown(key,mouseX,mouseY);
@@ -510,34 +816,64 @@ void testApp::keyReleased(int key){
         return;
 
     if (key=='1'){
-        xP[0]=mouseX-mainW;
-        yP[0]=mouseY;
+        selectedPoint=1;
     }
 
     if (key=='2'){
-        xP[1]=mouseX-mainW;
-        yP[1]=mouseY;
+        selectedPoint=2;
     }
 
     if (key=='3'){
-        xP[2]=mouseX-mainW;
-        yP[2]=mouseY;
+        selectedPoint=3;
     }
 
     if (key=='4'){
-        xP[3]=mouseX-mainW;
-        yP[3]=mouseY;
+        selectedPoint=4;
     }
 
     if (key=='m'){
-        ocvMask.setFromPixels(kinect.depthPixels, 640,480);
-        ocvDiff.setFromPixels(ocvMask.getPixels(),640,480);
+        //start mask accumulation
+        bAccumulateMask=!bAccumulateMask;
+        //if we just started, reset the initial Mask
+        if (bAccumulateMask){
+            ocvMask.setFromPixels(kinect.depthPixels, 640,480);
+        //otherwise, do the calculations like erode and stuff
+        }else{
+            postProcessMask();
+        }
+    }
+
+    if (key=='o'){   //mockup
+        bMockup=!bMockup;
+        if (bMockup)
+            mockup.play();
+    }
+
+    if (key=='g'){
+        bDrawGrid=!bDrawGrid;
+    }
+
+    //Reset trackPointBuffers
+    if (key=='r'){
+        cout << "resetting trackPoint Buffer" << endl;
+        //for each Puppet potentially to be tracked
+        for (int i=0;i<MAXPUPPE;i++){
+            trackPointBuffer[i].clear();
+            //set up a buffer as big as TRACKBUFFER
+            for (int b=0;b<TRACKBUFFER;b++){
+                trackPointBuffer[i].push_back(Vector3f(0,0,0));
+            }
+        }
+
     }
 
 }
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y ){
+
+    mX=x;
+    mY=y;
 
     input->moveMouse(x,y);
 }
@@ -798,6 +1134,34 @@ void testApp::interfaceSetup(){
     renderer->buttonList.push_back(but);
 
 
+    but= new TextInputButton();
+    but->name="trackDistance";
+    but->buttonProperty="TRACKDISTANCE";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(500,860,0));
+    but->scale.x=130;
+    but->scale.y=12;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="imageBuffer";
+    but->buttonProperty="IMAGEBUFFER";
+    but->bDrawName=true;
+    but->tooltip="";
+    but->setLocation(Vector3f(500,890,0));
+    but->scale.x=130;
+    but->scale.y=12;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->setup();
+    renderer->buttonList.push_back(but);
+
     slBut= new SliderButton();
     slBut->name="thresholdSlider";
     slBut->bDrawName=false;
@@ -812,6 +1176,46 @@ void testApp::interfaceSetup(){
     slBut->setup();
     slBut->sliderValue=threshold/255.0;
     renderer->buttonList.push_back(slBut);
+
+
+    connectSetup();
+
+}
+
+void testApp::connectSetup(){
+
+    BasicButton* but;
+
+    for (int i=0;i<MAXPUPPE;i++){
+        but= new AssignButton();
+        but->name="connect";
+        but->bDrawName=false;
+        but->tooltip="";
+        but->setLocation(Vector3f(500+i*(but->scale.x+10),920,0));
+        but->scale.x=32;
+        but->scale.y=32;
+        but->parent=this;
+        but->color=Vector4f(0.5,0.5,0.0,1.0);
+        but->setup();
+        renderer->buttonList.push_back(but);
+        connectors.push_back(but);
+    }
+
+    for (int i=0;i<MAXPUPPE;i++){
+        but= new AssignButton();
+        but->name="connect";
+        but->bDrawName=false;
+        but->tooltip="";
+        but->setLocation(Vector3f(500+i*(but->scale.x+10),980,0));
+        but->scale.x=32;
+        but->scale.y=32;
+        but->textureID="icon_flat";
+        but->parent=this;
+        but->color=Vector4f(0.0,0.0,0.5,1);
+        but->setup();
+        renderer->buttonList.push_back(but);
+        connected.push_back(but);
+    }
 }
 
 
@@ -821,7 +1225,8 @@ void testApp::cornerSetup(){
 
     //eckKnoepfe
     Vector3f eckScale=Vector3f(32,32,1);
-    Vector4f eckColor=Vector4f(1,1,1,1.0);
+    Vector4f eckColor=Vector4f(0,1,1,1.0);
+
 
         //corners
     but= new AssignButton;
@@ -883,6 +1288,11 @@ void testApp::cornerSetup(){
     but->parent=this;
     but->setup();
     renderer->buttonList.push_back(but);
+
+    eckColor=Vector4f(1,1,0,1.0);
+
+
+
 
     //projector2
     but= new AssignButton;
