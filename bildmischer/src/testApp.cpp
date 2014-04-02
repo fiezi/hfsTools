@@ -53,7 +53,7 @@ void testApp::setup(){
     interfaceSetup();
 
 
-    myFont.loadFont("verdana.ttf",200);
+    myFont.loadFont("verdana.ttf",150);
 
 }
 
@@ -144,10 +144,10 @@ void testApp::draw(){
     ofSetHexColor(0xffffff);
 
 	if (selectedCam==1){
-        vidGrabberOne.draw(1440,0,1280,720);
+        vidGrabberOne.draw(1366,0,1280,720);
 	}
 	if (selectedCam==2){
-        apolloMovie.draw(1440,0,1280,720);
+        apolloMovie.draw(1366,0,1280,720);
 	}
 	if (selectedCam==3){
         drawText();
@@ -155,7 +155,7 @@ void testApp::draw(){
 	if (selectedCam==4){
         ofFill();
         ofSetHexColor(0x000000);
-        ofRect(1440,0,1280,720);
+        ofRect(1366,0,1280,720);
         ofNoFill();
 	}
 
@@ -166,7 +166,7 @@ void testApp::draw(){
 void testApp::drawText(){
 
     ofPushMatrix();
-    ofTranslate(1280,200);
+    ofTranslate(1366,200);
     myFont.drawString(myBut->tooltip,50,50);
     ofPopMatrix();
 
@@ -198,6 +198,33 @@ void testApp::keyPressed  (int key){
 	// use alt-tab to navigate to the settings
 	// window. we are working on a fix for this...
 
+	if (key=='1'){
+        selectedCam=1;
+        apolloMovie.stop();
+        apolloMovie.firstFrame();
+        return;
+	}
+	if (key=='2'){
+        selectedCam=2;
+        apolloMovie.play();
+        return;
+	}
+	if (key=='3'){
+        selectedCam=3;
+        apolloMovie.stop();
+        apolloMovie.firstFrame();
+        return;
+        //myBut->clickedLeft();
+
+	}
+	if (key=='4'){
+        selectedCam=4;
+        apolloMovie.stop();
+        apolloMovie.firstFrame();
+        return;
+	}
+
+
     input->normalKeyDown(key,mouseX,mouseY);
     if (input->bTextInput)
         return;
@@ -209,28 +236,10 @@ void testApp::keyPressed  (int key){
 		vidGrabberThree.videoSettings();
 	}
 
-	if (key=='1'){
-        selectedCam=1;
-        apolloMovie.stop();
-        apolloMovie.firstFrame();
-	}
-	if (key=='2'){
-        selectedCam=2;
-        apolloMovie.play();
-	}
-	if (key=='3'){
-        selectedCam=3;
-        apolloMovie.stop();
-        apolloMovie.firstFrame();
+
+    if (key==13){
         myBut->clickedLeft();
-	}
-	if (key=='4'){
-        selectedCam=4;
-        apolloMovie.stop();
-        apolloMovie.firstFrame();
-	}
-
-
+    }
 
 }
 

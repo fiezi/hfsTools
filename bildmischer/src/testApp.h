@@ -2,7 +2,6 @@
 #define _TEST_APP
 
 #include "ofxOpenCv.h"
-#include "ofxKinect.h"
 #include "ofMain.h"
 #include "msbOFCore.h"
 #include "actor.h"
@@ -14,8 +13,8 @@
 
 
 
-#define SCREENRESX 1920+1920+1280
-#define SCREENRESY 1080
+#define SCREENRESX 1366+1280
+#define SCREENRESY 768
 
 
 struct actorID;
