@@ -21,7 +21,7 @@
         <DRAWTYPE>int 2</DRAWTYPE>
         <ERODEAMOUNT>int 1</ERODEAMOUNT>
         <GROUPID>string NULL</GROUPID>
-        <IMAGEBUFFER>int 8</IMAGEBUFFER>
+        <IMAGEBUFFER>int 1</IMAGEBUFFER>
         <LINEWIDTH>float 10.000000</LINEWIDTH>
         <LOCATION>vec3f 0.000000 0.000000 0.000000</LOCATION>
         <MENUTYPE>vector|string 10MoveButton|string 12RotateButton</MENUTYPE>

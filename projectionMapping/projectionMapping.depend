@@ -2406,11 +2406,11 @@
 1382318496 source:c:\of_v0.8.0_win_cb_release\addons\msbofcore\vmath\vmath.cpp
 	"vmath.h"
 
-1382318587 source:c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\ofxkinect.cpp
+1397913731 source:c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\ofxkinect.cpp
 	"ofxKinect.h"
 	"ofMain.h"
 
-1382318587 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\ofxkinect.h
+1397915938 c:\of_v0.8.0_win_cb_release\addons\ofxkinectopenni\ofxkinect.h
 	"ofConstants.h"
 	"ofTexture.h"
 	"ofImage.h"
@@ -2598,6 +2598,6 @@
 	"ofTypes.h"
 	"ofPixels.h"
 
-1396307482 source:c:\of_v0.8.0_win_cb_release\apps\hfstools\projectionmapping\src\testapp.cpp
+1397915867 source:c:\of_v0.8.0_win_cb_release\apps\hfstools\projectionmapping\src\testapp.cpp
 	"testApp.h"
 
