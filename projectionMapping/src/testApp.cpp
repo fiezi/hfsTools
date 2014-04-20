@@ -130,7 +130,7 @@ void testApp::setup(){
 
     //stage simulation
     stageImage.loadImage("stage.tga");
-    mockup.loadMovie("mockup.mp4");
+    //mockup.loadMovie("mockup.mp4");
 
     //stageImage.getTextureReference().texData.textureTarget=GL_TEXTURE_2D;
 
@@ -211,7 +211,7 @@ void testApp::update(){
     if(currentFrame%imageBuffer==0){
         //reset image to be accumulated
         ocvImage.setFromPixels(ocvBufferedImage.getPixels(),640,480);
-        ocvBufferedImage.setFromPixels(kinect.depthPixels,640,480);
+        ocvBufferedImage.setFromPixels(kinect.sensors[0].depthPixels,640,480);
     }else{
         //build image
         accumulateImage();
@@ -327,7 +327,7 @@ void testApp::applyMask(){
 void testApp::accumulateMask(){
 
 
-pixelBufferOne=kinect.depthPixels;
+pixelBufferOne=kinect.sensors[0].depthPixels;
 pixelBufferTwo=ocvMask.getPixels();
 
 for (int i=0;i<640*480;i++){
@@ -345,7 +345,7 @@ ocvMask.setFromPixels(pixelBufferTwo, 640,480);
 
 void testApp::accumulateImage(){
 
-    pixelBufferOne=kinect.depthPixels;
+    pixelBufferOne=kinect.sensors[0].depthPixels;
     pixelBufferTwo=ocvBufferedImage.getPixels();
 
     for (int i=0;i<640*480;i++){
@@ -836,7 +836,7 @@ void testApp::keyReleased(int key){
         bAccumulateMask=!bAccumulateMask;
         //if we just started, reset the initial Mask
         if (bAccumulateMask){
-            ocvMask.setFromPixels(kinect.depthPixels, 640,480);
+            ocvMask.setFromPixels(kinect.sensors[0].depthPixels, 640,480);
         //otherwise, do the calculations like erode and stuff
         }else{
             postProcessMask();
