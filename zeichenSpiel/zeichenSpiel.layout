@@ -1,32 +1,216 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="release" />
-	<File name="src\testApp.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<ActiveTarget name="debug" />
+	<File name="..\..\..\addons\msbOFCore\renderer.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="4147" topLine="44" />
+			<Cursor1 position="39120" topLine="52" />
 		</Cursor>
 		<Folding>
-			<Collapse line="41" />
-			<Collapse line="90" />
-			<Collapse line="108" />
-			<Collapse line="114" />
-			<Collapse line="130" />
-			<Collapse line="213" />
-			<Collapse line="219" />
-			<Collapse line="265" />
+			<Collapse line="51" />
+			<Collapse line="85" />
+			<Collapse line="167" />
+			<Collapse line="183" />
+			<Collapse line="199" />
+			<Collapse line="227" />
+			<Collapse line="255" />
+			<Collapse line="386" />
+			<Collapse line="464" />
+			<Collapse line="490" />
+			<Collapse line="504" />
+			<Collapse line="586" />
+			<Collapse line="633" />
+			<Collapse line="667" />
+			<Collapse line="670" />
+			<Collapse line="692" />
+			<Collapse line="698" />
+			<Collapse line="710" />
+			<Collapse line="716" />
+			<Collapse line="730" />
+			<Collapse line="759" />
+			<Collapse line="770" />
+			<Collapse line="779" />
+			<Collapse line="791" />
+			<Collapse line="811" />
+			<Collapse line="824" />
+			<Collapse line="838" />
+			<Collapse line="846" />
+			<Collapse line="859" />
+			<Collapse line="866" />
+			<Collapse line="890" />
+			<Collapse line="927" />
+			<Collapse line="955" />
+			<Collapse line="964" />
+			<Collapse line="977" />
+			<Collapse line="1049" />
+			<Collapse line="1063" />
+			<Collapse line="1109" />
+			<Collapse line="1160" />
+			<Collapse line="1197" />
+			<Collapse line="1259" />
+			<Collapse line="1270" />
+			<Collapse line="1296" />
+			<Collapse line="1308" />
+			<Collapse line="1313" />
+			<Collapse line="1328" />
+			<Collapse line="1380" />
+			<Collapse line="1426" />
+			<Collapse line="1434" />
+			<Collapse line="1440" />
+			<Collapse line="1489" />
+			<Collapse line="1530" />
+			<Collapse line="1579" />
+			<Collapse line="1584" />
+			<Collapse line="1590" />
+			<Collapse line="1599" />
+			<Collapse line="1605" />
+			<Collapse line="1610" />
+			<Collapse line="1615" />
+			<Collapse line="1619" />
+			<Collapse line="1644" />
+			<Collapse line="1652" />
+			<Collapse line="1690" />
+			<Collapse line="1704" />
+			<Collapse line="1714" />
+			<Collapse line="1762" />
+			<Collapse line="1788" />
+			<Collapse line="1806" />
+			<Collapse line="1830" />
+			<Collapse line="1835" />
+			<Collapse line="1845" />
+			<Collapse line="1852" />
+			<Collapse line="1854" />
+			<Collapse line="1863" />
+			<Collapse line="1865" />
+			<Collapse line="1877" />
+			<Collapse line="1888" />
+			<Collapse line="1896" />
+			<Collapse line="1923" />
+			<Collapse line="1949" />
+			<Collapse line="2006" />
+			<Collapse line="2009" />
+			<Collapse line="2051" />
+			<Collapse line="2081" />
+			<Collapse line="2087" />
+			<Collapse line="2100" />
+			<Collapse line="2128" />
+			<Collapse line="2136" />
+			<Collapse line="2144" />
+			<Collapse line="2152" />
+			<Collapse line="2160" />
+			<Collapse line="2164" />
 		</Folding>
 	</File>
-	<File name="src\main.cpp" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\addons\msbOFCore\actor.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="11165" topLine="325" />
+		</Cursor>
+		<Folding>
+			<Collapse line="9" />
+		</Folding>
+	</File>
+	<File name="src\testApp.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1011" topLine="24" />
+		</Cursor>
+		<Folding>
+			<Collapse line="26" />
+			<Collapse line="70" />
+			<Collapse line="123" />
+			<Collapse line="132" />
+			<Collapse line="147" />
+			<Collapse line="189" />
+			<Collapse line="195" />
+			<Collapse line="205" />
+			<Collapse line="217" />
+			<Collapse line="224" />
+			<Collapse line="230" />
+			<Collapse line="236" />
+			<Collapse line="245" />
+			<Collapse line="258" />
+		</Folding>
+	</File>
+	<File name="bin\shaders\particleHeightField.vert" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1178" topLine="0" />
+		</Cursor>
+		<Folding>
+			<Collapse line="14" />
+			<Collapse line="18" />
+			<Collapse line="27" />
+		</Folding>
+	</File>
+	<File name="..\..\..\addons\ofxKinectOpenNI\ofxKinect.cpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="11517" topLine="155" />
+		</Cursor>
+		<Folding>
+			<Collapse line="7" />
+			<Collapse line="36" />
+			<Collapse line="53" />
+			<Collapse line="66" />
+			<Collapse line="71" />
+			<Collapse line="104" />
+			<Collapse line="166" />
+			<Collapse line="172" />
+			<Collapse line="177" />
+			<Collapse line="182" />
+			<Collapse line="187" />
+			<Collapse line="192" />
+			<Collapse line="217" />
+			<Collapse line="224" />
+			<Collapse line="279" />
+			<Collapse line="351" />
+			<Collapse line="356" />
+			<Collapse line="361" />
+			<Collapse line="379" />
+			<Collapse line="384" />
+			<Collapse line="385" />
+			<Collapse line="391" />
+			<Collapse line="396" />
+			<Collapse line="397" />
+			<Collapse line="403" />
+			<Collapse line="408" />
+			<Collapse line="413" />
+			<Collapse line="419" />
+			<Collapse line="424" />
+			<Collapse line="426" />
+			<Collapse line="485" />
+			<Collapse line="499" />
+			<Collapse line="510" />
+			<Collapse line="523" />
+			<Collapse line="595" />
+			<Collapse line="600" />
+			<Collapse line="607" />
+			<Collapse line="613" />
+		</Folding>
+	</File>
+	<File name="bin\shaders\particleHeightField.frag" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="373" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="src\main.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="234" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="src\testApp.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\testApp.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1395" topLine="0" />
+			<Cursor1 position="1958" topLine="44" />
+		</Cursor>
+	</File>
+	<File name="bin\shaders\zeichen.frag" open="1" top="1" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="6207" topLine="50" />
 		</Cursor>
 		<Folding>
-			<Collapse line="21" />
+			<Collapse line="11" />
+			<Collapse line="70" />
 		</Folding>
+	</File>
+	<File name="bin\shaders\zeichen.vert" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="67" topLine="0" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

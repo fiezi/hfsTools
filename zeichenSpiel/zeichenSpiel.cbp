@@ -371,10 +371,10 @@
 		<Unit filename="bin/shaders/font.vert">
 			<Option virtualFolder="shaders/" />
 		</Unit>
-		<Unit filename="bin/shaders/particleHeightFieldRect.frag">
+		<Unit filename="bin/shaders/particleHeightField.frag">
 			<Option virtualFolder="shaders/" />
 		</Unit>
-		<Unit filename="bin/shaders/particleHeightFieldRect.vert">
+		<Unit filename="bin/shaders/particleHeightField.vert">
 			<Option virtualFolder="shaders/" />
 		</Unit>
 		<Unit filename="bin/shaders/post/deferredLight.frag">
@@ -402,6 +402,12 @@
 			<Option virtualFolder="shaders/" />
 		</Unit>
 		<Unit filename="bin/shaders/texture.vert">
+			<Option virtualFolder="shaders/" />
+		</Unit>
+		<Unit filename="bin/shaders/zeichen.frag">
+			<Option virtualFolder="shaders/" />
+		</Unit>
+		<Unit filename="bin/shaders/zeichen.vert">
 			<Option virtualFolder="shaders/" />
 		</Unit>
 		<Unit filename="src/main.cpp">
