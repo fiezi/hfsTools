@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
-	<ActiveTarget name="debug" />
-	<File name="..\..\..\addons\ofxOpenCv\src\ofxCvContourFinder.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\..\addons\msbOFCore\msbButtons\assignButton.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
+	<ActiveTarget name="release" />
 	<File name="src\main.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="470" topLine="0" />
@@ -20,8 +10,16 @@
 		<Cursor>
 			<Cursor1 position="416" topLine="0" />
 		</Cursor>
+		<Folding>
+			<Collapse line="26" />
+		</Folding>
 	</File>
-	<File name="..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\..\addons\msbOFCore\vMath\vmath.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\addons\ofxOpenCv\src\ofxCvContourFinder.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="0" topLine="0" />
 		</Cursor>
@@ -35,27 +33,47 @@
 			<Collapse line="52" />
 		</Folding>
 	</File>
-	<File name="..\..\..\addons\msbOFCore\vMath\vmath.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="src\testApp.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="src\testApp.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3935" topLine="34" />
+			<Cursor1 position="26689" topLine="51" />
 		</Cursor>
 		<Folding>
 			<Collapse line="6" />
 			<Collapse line="21" />
+			<Collapse line="145" />
+			<Collapse line="167" />
 			<Collapse line="191" />
+			<Collapse line="226" />
+			<Collapse line="302" />
 			<Collapse line="326" />
 			<Collapse line="345" />
+			<Collapse line="362" />
+			<Collapse line="378" />
+			<Collapse line="388" />
+			<Collapse line="398" />
+			<Collapse line="636" />
+			<Collapse line="651" />
+			<Collapse line="753" />
+			<Collapse line="783" />
 			<Collapse line="810" />
 			<Collapse line="872" />
 			<Collapse line="881" />
 			<Collapse line="887" />
 			<Collapse line="894" />
 			<Collapse line="901" />
+			<Collapse line="906" />
+			<Collapse line="947" />
+			<Collapse line="1001" />
 		</Folding>
+	</File>
+	<File name="..\..\..\addons\msbOFCore\msbButtons\assignButton.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\..\addons\ofxOpenCv\src\ofxCvBlob.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
