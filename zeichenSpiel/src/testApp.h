@@ -12,8 +12,8 @@
 #include "msbOFCore.h"
 #include "actor.h"
 
-#define KINECTSIZE unsigned char
-//#define KINECTSIZE float
+#define SCREENRESX 1920
+#define SCREENRESY 1080
 
 
 struct actorID;
@@ -34,16 +34,8 @@ class testApp : public ofBaseApp, public Actor{
 
 		void update();
 
-		void sendSkeleton(int i);
-
-        Matrix4f makeMatrix4(XnSkeletonJointOrientation* joint);
-
-        string makeMatrixMessage( ofxOscMessage* myMessage, Matrix4f myMat4 );
-
 		void draw();
 		void exit();
-
-        int shareMemory();
 
 		void keyPressed  (int key);
 		void keyReleased  (int key);
@@ -58,38 +50,15 @@ class testApp : public ofBaseApp, public Actor{
         void trigger(Actor* other);
         void loadSettings();
 
-#ifdef TARGET_WIN32
-        HANDLE hMapFile;
-        LPCTSTR pBuf;
-#else
-		void *sharedMemFile;
-		int fd,ret;
-		void *sourcebuffer;
-
-#endif
         ofxKinect           kinect;
-        ofxOscSender        osc_sender;
 
-
-        string              ipAddress;
-        int                 channel;
-
-        int                 skelNo;
-
-		bool                bShareMemory;
         bool                bSetCutoffToZero;
         bool                bFullscreen;
-        bool                bSendSkeleton;
 
         //msbTools specific
 
-        KINECTSIZE *        myPic;
-
-        bool                bHighZRes;
-
         Input*              input;
         Renderer*           renderer;
-        Actor*              patchActor;
 
         float               cutOffDepth;
 
@@ -111,6 +80,10 @@ class testApp : public ofBaseApp, public Actor{
         unsigned char*               pixelBufferOne;
         unsigned char*               pixelBufferTwo;
         unsigned char*               pixelBufferThree;
+
+
+        BasicButton*        kinectDisplay;
+        bool                bKinectIsSending;
 
 };
 

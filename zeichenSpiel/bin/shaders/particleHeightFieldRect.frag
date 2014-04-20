@@ -1,3 +1,4 @@
+#version140
 uniform sampler2DRect tex;
 //uniform sampler2D displacementTex;
 //uniform sampler2D normalTex;
