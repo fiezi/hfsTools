@@ -26,6 +26,9 @@ void testApp::setup(){
 
 	selectedCam     =1;
 
+	projectorPos    =1366;
+	theText         ="";
+
 	vidGrabberOne.setVerbose(true);
 	vidGrabberOne.setDeviceID(0);
 	vidGrabberOne.initGrabber(camWidth,camHeight);
@@ -82,7 +85,7 @@ void testApp::msbSetup(){
 
 void testApp::registerProperties(){
 
-
+    createMemberID("PROJECTORPOS",&projectorPos,this);
 }
 
 
@@ -92,6 +95,8 @@ void testApp::update(){
     renderer->update();
     apolloMovie.update();
 	ofBackground(100,100,100);
+
+    theText=linebreak(myBut->tooltip);
 
 	vidGrabberOne.update();
 	vidGrabberTwo.update();
@@ -144,10 +149,10 @@ void testApp::draw(){
     ofSetHexColor(0xffffff);
 
 	if (selectedCam==1){
-        vidGrabberOne.draw(1366,0,1280,720);
+        vidGrabberOne.draw(projectorPos,0,1280,720);
 	}
 	if (selectedCam==2){
-        apolloMovie.draw(1366,0,1280,720);
+        apolloMovie.draw(projectorPos,0,1280,720);
 	}
 	if (selectedCam==3){
         drawText();
@@ -155,7 +160,7 @@ void testApp::draw(){
 	if (selectedCam==4){
         ofFill();
         ofSetHexColor(0x000000);
-        ofRect(1366,0,1280,720);
+        ofRect(projectorPos,0,1280,720);
         ofNoFill();
 	}
 
@@ -166,10 +171,65 @@ void testApp::draw(){
 void testApp::drawText(){
 
     ofPushMatrix();
-    ofTranslate(1366,200);
-    myFont.drawString(myBut->tooltip,50,50);
+    ofTranslate(projectorPos,200);
+
+    //ofScale(0.25,0.25);
+    //ofRect(0,0,1280,720);
+
+
+    ofScale(720.0/myFont.stringWidth(theText),720.0/myFont.stringWidth(theText));
+    myFont.drawString(theText,0,myFont.stringHeight(theText));
     ofPopMatrix();
 
+
+}
+
+string testApp::linebreak(string text){
+
+    cout << "Text before: " << text << endl;
+
+
+    int currentline = 1;
+    int lineBegin = 0;
+
+    unsigned pos = text.find(' ');         // position first space in text
+
+    if (pos==string::npos){
+        cout << "did not find a line-breakable character" << endl;
+        return text;
+    }
+
+    unsigned breakPos=pos;
+    std::string myLine = text.substr (0);
+
+    //while  (currentline < 5){
+        //if line is too long
+        if (myFont.stringWidth(myLine)>1280){
+            //find last space
+            pos = myLine.find_last_of(' ');
+            //found no space in this line!
+            if (pos==string::npos){
+                cout << "no linebreaks possible, because no spaces in this line!" << endl;
+                return text;
+            }
+            //new Line!
+            text.erase(text.begin()+pos);
+            text.insert(pos,"\n");
+        }
+
+        myLine = text.substr (pos);
+        cout << "new line!" << endl;
+        //text is now longer, so adjust accordingly
+        //breakPos++;
+        //pos++;
+
+        lineBegin=breakPos;
+        currentline++;
+
+        cout << "new line is this long: " << myFont.stringWidth(myLine) << endl;
+  //}
+
+  return text;
 
 }
 
@@ -314,7 +374,7 @@ void testApp::loadSettings(){
 void testApp::interfaceSetup(){
 
     //Adding MSB content
-    BasicButton *but;
+    TextInputButton *but;
 
     //anderes
     but= new TextInputButton();
@@ -328,6 +388,7 @@ void testApp::interfaceSetup(){
     but->textureID="icon_flat";
     but->parent=this;
     but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->bShowCursor=false;
     but->setup();
     renderer->buttonList.push_back(but);
     myBut=but;

@@ -49,6 +49,7 @@ class testApp : public ofBaseApp, public Actor{
         void loadSettings();
 
         void drawText();
+        string linebreak(string text);
 
 		ofVideoGrabber 		vidGrabberOne;
 		ofVideoGrabber 		vidGrabberTwo;
@@ -64,8 +65,12 @@ class testApp : public ofBaseApp, public Actor{
 		int 				camHeight;
 		int                 selectedCam;
 
+        int                 projectorPos;
+
 		BasicButton*        myBut;
 		ofTrueTypeFont      myFont;
+
+		string              theText;
 };
 
 #endif
