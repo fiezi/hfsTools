@@ -43,12 +43,16 @@ void testApp::setup(){
 
     //ofDisableArbTex();
 
-    ofSetFrameRate(30);
+    //ofSetFrameRate(30);
+
+    currentState=STARS;
 
     bFullscreen=false;
     cutOffDepth=4096;
     bSetCutoffToZero=false;
     thresh= 48;
+	starfieldSize=20;
+	numAsteroids=1000;
 
     msbSetup();
 	kinect.bImage=true;
@@ -65,6 +69,12 @@ void testApp::setup(){
 	kinect.open();
 
 	kinect.cutOffFar=cutOffDepth;
+
+	numAsteroids=0;
+	myVideo.loadMovie("omg-cat.gif");
+	myVideo.setLoopState(OF_LOOP_NONE);
+    //myVideo.play();
+
 
 }
 
@@ -85,8 +95,31 @@ void testApp::msbSetup(){
     renderer->setup();
 
     renderer->camActor=new Actor;
-    renderer->camActor->setLocation(Vector3f(0,0,-5));
+    renderer->camActor->setLocation(Vector3f(0,0,0));
+
     renderer->camActor->postLoad();
+
+
+    //MSB light
+    MsbLight* myActor = new MsbLight;
+    myActor->setLocation(Vector3f(0,0.0,-2));
+    myActor->postLoad();
+    myActor->color=Vector4f(0.5,0.5,1,1)*0.25;
+    myActor->lightDistance=64;
+    myActor->particleScale=1;
+    renderer->actorList.push_back(myActor);
+    renderer->lightList.push_back((MsbLight*)myActor);
+    renderer->layerList[0]->actorList.push_back(myActor);
+
+    myStars= new particleStream;
+    myStars->name="stars";
+    myStars->setup(20.0,100,1.5,DRAW_PLANE);
+
+    myAsteroid= new particleStream;
+    myAsteroid->name="asteroids";
+    myAsteroid->bRespawnTheDead=false;
+    myAsteroid->minSpeed=1.0;
+
 
     registerProperties();
 
@@ -129,19 +162,114 @@ void testApp::registerProperties(){
 
 }
 
+
 //--------------------------------------------------------------
 void testApp::update(){
 
 	ofBackground(100, 100, 100);
+
+    renderer->camActor->setRotation(Vector3f(0,0,ofGetElapsedTimef()*1.0));
+    renderer->camActor->update(renderer->deltaTime);
+
+    //renderer->camActor->setLocation(Vector3f(sin(ofGetElapsedTimef()*0.01),0,0));
+
 	kinect.update();
+    kinectDisplay->ofTexturePtr=&kinect.sensors[0].depthTex.getTextureReference();
 
     renderer->update();
-    kinectDisplay->ofTexturePtr=&kinect.sensors[0].depthTex.getTextureReference();
+    myStars->update();
+    myAsteroid->update();
+
+    checkKinect();
+
+    if (currentState==STARS){
+    //switch to next stage!
+        if (numAsteroids>100){
+            myStars->remove();
+            myStars->textureID="bloodVessel";
+            myStars->minSpeed=0.1;
+            myStars->initialOffset=Vector3f(0,0,10);
+            myStars->setScale(Vector3f(1,1,1));
+            myStars->setup(0.1,100,0.0,DRAW_PLANE);
+            myStars->bConstantUpdate=true;
+            numAsteroids=0;
+            currentState=VIDEO;
+            myVideo.play();
+
+            myAsteroid->remove();
+            myAsteroid->bConstantUpdate=true;
+            myAsteroid->minSpeed=0.25;
+            myAsteroid->setScale(Vector3f(0.25,0.25,0.25));
+        }
+
+        if ((ofGetElapsedTimeMillis()/100)%100==0)
+            sendMeteors();
+    }
+
+
+    if (currentState==VIDEO){
+        myVideo.update();
+        if (myVideo.getIsMovieDone()){
+            currentState=BLOOD;
+            cout << "yo! we finished!" << endl;
+        }
+    }
+
+    if (currentState==BLOOD){
+        if ((ofGetElapsedTimeMillis()/100)%100==0)
+            myAsteroid->setup(0.2,100,0.25,DRAW_CUBE);
+
+    }
+
 
 /*
     cvImage.threshold(thresh,true);
     contourFinder.findContours(cvImage, 256, 80000, 10, false);
 */
+}
+
+
+//find closest point to kinect, use as mouse for picking
+void testApp::checkKinect(){
+
+    splodeX=0;
+    splodeY=0;
+
+
+    unsigned char* myPixels;//= new unsigned char[640*480];
+
+    myPixels=kinect.sensors[0].depthPixels;
+
+    unsigned char lowest=255;
+    int coord=0;
+
+    for (int i=0;i<640*480;i++){
+        if (myPixels[i]<lowest){
+            lowest=myPixels[i];
+            coord=i;
+        }
+    }
+    if (lowest >100 || lowest==0)
+        return;
+
+    int x,y;
+
+
+    y=coord/640;
+    x=coord%640;
+
+    renderer->pick(x*3,int(float(y)*2.25));
+    if(input->worldTarget && input->worldTarget->name=="asteroids"){
+        //input->worldTarget->remove();
+        input->worldTarget->drawType=DRAW_TEA;
+        input->worldTarget->setScale(Vector3f(1,1,1));
+        cout << "I hit an asteroid!!!!!!!!!!" << endl;
+        numAsteroids++;
+    }
+
+    splodeX=x*3;
+    splodeY=y*2.25;
+
 }
 
 //--------------------------------------------------------------
@@ -153,37 +281,22 @@ void testApp::draw(){
 
     ofSetColor(255, 255, 255);
 
-    //kinect.draw(400,50,320,240,0);
-    kinect.drawDepth(50, 50, 320, 240,0);
+    ofCircle(splodeX,splodeY,20.0);
+    char buffer [30];
+    sprintf(buffer,"amount of Asteroids turned into teapots: %i",numAsteroids);
+    ofDrawBitmapString(buffer,1500,50);
 
-    ofPushMatrix();
-        ofTranslate(0,240);
-        ofPushMatrix();
-            ofTranslate(960-160, 0);
-            ofRotate(180);
-            ofTranslate(-320, -240);
-            kinect.drawDepth(0, 0, 320, 240,0);
-            //cvFinal.draw(960-160, 0, 320, 240);
-        ofPopMatrix();
-        ofPushMatrix();
-            ofTranslate(960-160,240);
-            ofRotate(90);
-            kinect.drawDepth(0, 0, 320, 240,0);
-            //cvFinal.draw(0, 0, 320, 240);
-        ofPopMatrix();
+    sprintf(buffer,"time: %i",ofGetElapsedTimeMillis()/1000);
+    ofDrawBitmapString(buffer,1500,100);
 
-        ofPushMatrix();
-            ofTranslate(960+160,240);
-            ofRotate(-90);
-            ofTranslate(-320,0);
-            kinect.drawDepth(0, 0, 320, 240,0);
-            //cvFinal.draw(0,0,320, 240);
-        ofPopMatrix();
+    if (currentState==VIDEO)
+        myVideo.draw(0,0,1920,1440);
 
-    ofPopMatrix();
+}
 
-        //cvImage.draw(420,50,400,300);
+void testApp::sendMeteors(){
 
+    myAsteroid->setup(1.0,100,0.75,DRAW_CUBE);
 }
 
 //--------------------------------------------------------------
@@ -211,7 +324,8 @@ void testApp::keyReleased(int key){
     if (key=='m')
         cvMaskBase.setFromPixels(cvImage.getPixels(),640,480);
 
-
+    if (key=='x')
+        myStars->bRespawnTheDead=false;
 }
 
 //--------------------------------------------------------------
@@ -237,6 +351,7 @@ void testApp::mousePressed(int x, int y, int button){
 void testApp::mouseReleased(int x, int y, int button){
 
     input->pressedMouse(button,1,x,y);
+
 }
 
 //--------------------------------------------------------------

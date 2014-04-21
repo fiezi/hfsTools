@@ -11,9 +11,15 @@
 #include "ofxOpenCV.h"
 #include "msbOFCore.h"
 #include "actor.h"
+#include "particleStream.h"
 
-#define SCREENRESX 1280
-#define SCREENRESY 720
+#define SCREENRESX 1920
+#define SCREENRESY 1080
+
+#define STARS 0
+#define VIDEO 1
+#define BLOOD 2
+
 
 
 struct actorID;
@@ -50,7 +56,11 @@ class testApp : public ofBaseApp, public Actor{
         void trigger(Actor* other);
         void loadSettings();
 
+        void checkKinect();
+        void sendMeteors();
+
         ofxKinect           kinect;
+        ofVideoPlayer       myVideo;
 
         bool                bSetCutoffToZero;
         bool                bFullscreen;
@@ -81,9 +91,14 @@ class testApp : public ofBaseApp, public Actor{
         unsigned char*               pixelBufferTwo;
         unsigned char*               pixelBufferThree;
 
+        float               starfieldSize;
+        int                 numAsteroids;
+        int                 currentState;
+        float               splodeX,splodeY;
 
         BasicButton*        kinectDisplay;
-        bool                bKinectIsSending;
+        particleStream*           myStars;
+        particleStream*           myAsteroid;
 
 };
 

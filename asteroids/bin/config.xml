@@ -40,22 +40,22 @@
     <Rendersettings
 
 
-      WindowSizeX="1280"
-      WindowSizeY="720"
-      ScreenSizeX="1280"
-      ScreenSizeY="720"
+      WindowSizeX="1920"
+      WindowSizeY="1080"
+      ScreenSizeX="1920"
+      ScreenSizeY="1080"
       bRenderStereo="0"
 
       bFullScreen="0"
 
       BackgroundTex="NULL"
 
-      bDrawLighting="0"
+      bDrawLighting="1"
       bMultisample="0"
       numSamples="1"
 
-      ShadowSize="768"
-      SceneSize="768"
+      ShadowSize="512"
+      SceneSize="1920"
 
       MouseSensitivity="0.04"
       MoveSpeed="8.0"
