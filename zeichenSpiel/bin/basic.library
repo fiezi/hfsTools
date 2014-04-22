@@ -7,7 +7,10 @@
     <Texture textureID="icon_flat" filename="icons/icon_flat.tga" bAlpha="1" bWrap="1" />
     <Texture textureID="grid_solid" filename="icons/grid_solid.tga" bAlpha="0" bWrap="1" />
     <Texture textureID="grid" filename="icons/grid.tga" bAlpha="1" bWrap="1" />
+    <Texture textureID="mean_sign" filename="icons/mean_sign.tga" bAlpha="1" bWrap="1" />
+    <Texture textureID="happy_sign" filename="icons/happy_sign.tga" bAlpha="1" bWrap="1" />
     <Texture textureID="a_sign" filename="icons/a_sign.tga" bAlpha="1" bWrap="1" />
+    <Texture textureID="alone_sign" filename="icons/alone_sign.tga" bAlpha="1" bWrap="1" />
                                                                                                                                    
  <!-- Shaders -->
 

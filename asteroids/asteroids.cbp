@@ -407,6 +407,12 @@
 		<Unit filename="src/main.cpp">
 			<Option virtualFolder="src/" />
 		</Unit>
+		<Unit filename="src/particleStream.cpp">
+			<Option virtualFolder="src/" />
+		</Unit>
+		<Unit filename="src/particleStream.h">
+			<Option virtualFolder="src/" />
+		</Unit>
 		<Unit filename="src/testApp.cpp">
 			<Option virtualFolder="src/" />
 		</Unit>

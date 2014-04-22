@@ -207,7 +207,11 @@ void main(){
         gl_FragData[0].rgb=vec3(1,1,1)  ;
     }
 
+
     //gl_FragData[0]= color *3.0;
-    gl_FragData[0].a= 1.0;
+    if (gl_FragData[0].r+gl_FragData[0].g+gl_FragData[0].b<0.2)
+        gl_FragData[0].a= 0.0;
+    else
+        gl_FragData[0].a= 1.0;
 
 }

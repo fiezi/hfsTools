@@ -30,11 +30,17 @@ class testApp : public ofBaseApp, public Actor{
 
         void msbSetup();
 		void interfaceSetup();
-		void filemappingSetup();
+		void setupManageInterface();
+		void setupKinectInterface();
 
 		void update();
 
 		void draw();
+		void drawComputer();
+		void drawSystemVoice();
+
+        void audioReceived(float * input, int bufferSize, int nChannels);
+
 		void exit();
 
 		void keyPressed  (int key);
@@ -62,28 +68,32 @@ class testApp : public ofBaseApp, public Actor{
 
         float               cutOffDepth;
 
-        float               thresh;
-
-        int                 dilate;
-        int                 erode;
-        int                 blur;
-
-        int                 dilateMask;
-        int                 erodeMask;
-        int                 blurMask;
-
-        ofxCvGrayscaleImage          cvImage;
-        ofxCvGrayscaleImage          cvFinal;
-        ofxCvGrayscaleImage          cvMaskBase;
-        ofxCvGrayscaleImage          cvMask;
-
-        unsigned char*               pixelBufferOne;
-        unsigned char*               pixelBufferTwo;
-        unsigned char*               pixelBufferThree;
-
-
+        //for kinect
         BasicButton*        kinectDisplay;
-        bool                bKinectIsSending;
+        BasicButton*        kinectDisplayTwo;
+        BasicButton*        kinectDisplayThree;
+
+        //for drawing
+        float               circleX;
+        float               circleY;
+        float               circleR;
+        float               xOffset;
+        float               yOffset;
+
+        //for states
+        bool                bFullSystem;
+        bool                bLectureGroup;
+
+        float               systemVoiceSize;
+
+        //for Sound
+        ofSoundStream       mySound;
+        float*              amp;
+        float               systemVoice;
+        int                 bufferCounter;
+
+
+
 
 };
 
