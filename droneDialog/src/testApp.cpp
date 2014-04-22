@@ -158,7 +158,6 @@ void testApp::interfaceSetup(){
 
 
     textFieldSetup();
-
 }
 
 void testApp::textFieldSetup(){
@@ -170,13 +169,13 @@ void testApp::textFieldSetup(){
     but->name="Drohne1";
     but->buttonProperty="NULL";
     but->bDrawName=true;
-    but->tooltip="Was fuer ein toller\nTag!";
+    but->tooltip="Drone One Text\ngoes here...";
     but->setLocation(Vector3f(20,100,0));
     but->scale.x=128;
     but->scale.y=32;
     but->textureID="icon_flat";
     but->parent=this;
-    but->color=Vector4f(0.0,0.5,0.0,1.0);
+    but->color=Vector4f(0.5,0.75,0.5,1.0);
     but->bShowCursor=true;
     but->setup();
     renderer->buttonList.push_back(but);
@@ -186,13 +185,13 @@ void testApp::textFieldSetup(){
     but->name="Drohne2";
     but->buttonProperty="NULL";
     but->bDrawName=true;
-    but->tooltip="ja, find ich auch!";
+    but->tooltip="whereas Drone Two\nText is here.";
     but->setLocation(Vector3f(20,400,0));
     but->scale.x=128;
     but->scale.y=32;
     but->textureID="icon_flat";
     but->parent=this;
-    but->color=Vector4f(0.0,0.0,0.50,1.0);
+    but->color=Vector4f(0.50,0.50,0.750,1.0);
     but->bShowCursor=true;
     but->setup();
     renderer->buttonList.push_back(but);
@@ -208,7 +207,7 @@ void testApp::textFieldSetup(){
     bb->scale.y=64;
     bb->textureID="icon_flat";
     bb->parent=this;
-    bb->color=Vector4f(0.5,0.0,0.0,1.0);
+    bb->color=Vector4f(0.5,0.40,0.40,1.0);
     bb->setup();
     renderer->buttonList.push_back(bb);
 
@@ -222,7 +221,7 @@ void testApp::textFieldSetup(){
     bb->scale.y=64;
     bb->textureID="icon_flat";
     bb->parent=this;
-    bb->color=Vector4f(0.5,0.0,0.0,1.0);
+    bb->color=Vector4f(0.5,0.40,0.40,1.0);
     bb->setup();
     renderer->buttonList.push_back(bb);
 }
@@ -279,7 +278,7 @@ void testApp::draw(){
     ofPushMatrix();
         ofTranslate(xOffset,yOffset);
         ofScale(0.5,0.5);
-        ofSetColor(20,20,30);
+        ofSetColor(40,40,40);
         ofRect(0,0,1920,1080);
 
         ofSetColor(255,255,255);

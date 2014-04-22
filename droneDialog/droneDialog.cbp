@@ -632,10 +632,6 @@
 		<Unit filename="../../../addons/ofxThreadedImageLoader/src/ofxThreadedImageLoader.h">
 			<Option virtualFolder="addons/ofxThreadedImageLoader/src" />
 		</Unit>
-		<Unit filename="icon.rc">
-			<Option compilerVar="WINDRES" />
-			<Option virtualFolder="src/" />
-		</Unit>
 		<Unit filename="src/main.cpp">
 			<Option virtualFolder="src" />
 		</Unit>

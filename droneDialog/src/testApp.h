@@ -13,8 +13,8 @@
 
 
 
-#define SCREENRESX 1366+1280
-#define SCREENRESY 768
+#define SCREENRESX 1920
+#define SCREENRESY 1080
 
 
 struct actorID;
