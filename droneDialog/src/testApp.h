@@ -32,6 +32,8 @@ class testApp : public ofBaseApp, public Actor{
 		void update();
 		void draw();
 
+        bool parseForImage(ofImage* myImage, string text);
+
 		void keyPressed(int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
@@ -48,29 +50,34 @@ class testApp : public ofBaseApp, public Actor{
 		void trigger(Actor* other);
         void loadSettings();
 
-        void drawText();
-        string linebreak(string text);
+        void textFieldSetup();
 
-		ofVideoGrabber 		vidGrabberOne;
-		ofVideoGrabber 		vidGrabberTwo;
-		ofVideoGrabber 		vidGrabberThree;
-        ofVideoPlayer 		apolloMovie;
+        string linebreak(string text,ofTrueTypeFont* myFont);
 
+        ofImage             drohneOneImage;
+        ofImage             drohneTwoImage;
+		BasicButton*        drohneOne;
+		BasicButton*        drohneTwo;
 
-		unsigned char * 	videoInverted;
-		ofTexture			videoTextureOne;
-		ofTexture			videoTextureTwo;
-		ofTexture			videoTextureThree;
-		int 				camWidth;
-		int 				camHeight;
-		int                 selectedCam;
+		ofTrueTypeFont      drohneOneFont;
+		ofTrueTypeFont      drohneTwoFont;
 
-        int                 projectorPos;
+		float               fontSizeOne;
+		float               fontSizeTwo;
 
-		BasicButton*        myBut;
-		ofTrueTypeFont      myFont;
+		float               textSpeedOne,textSpeedTwo;
 
-		string              theText;
+		string              drohneOneText;
+		string              drohneTwoText;
+
+		float               xOffset,yOffset;
+
+		bool                bShowTextOne,bShowTextTwo;
+		bool                bShowImageOne,bShowImageTwo;
+		bool                bShowMovieOne,bShowMovieTwo;
+
+		//for animation
+		float               textOneChar,textTwoChar;
 };
 
 #endif

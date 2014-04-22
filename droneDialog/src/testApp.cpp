@@ -21,34 +21,29 @@ testApp::~testApp(){
 //--------------------------------------------------------------
 void testApp::setup(){
 
-	camWidth 		= 640;	// try to grab at this size.
-	camHeight 		= 480;
+	drohneOneText="";
+	drohneTwoText="";
+	xOffset=400;
+	yOffset=100;
 
-	selectedCam     =1;
+    fontSizeOne=72;
+    fontSizeTwo=72;
 
-	projectorPos    =1366;
-	theText         ="";
+	textSpeedOne=10;
+	textSpeedTwo=5;
 
-	vidGrabberOne.setVerbose(true);
-	vidGrabberOne.setDeviceID(0);
-	vidGrabberOne.initGrabber(camWidth,camHeight);
+    bShowTextOne=false;
+    bShowImageOne=false;
+    bShowMovieOne=false;
 
-	vidGrabberTwo.setVerbose(true);
-	vidGrabberTwo.setDeviceID(0);
-	vidGrabberTwo.initGrabber(camWidth,camHeight);
+    bShowTextTwo=false;
+    bShowImageTwo=false;
+    bShowMovieTwo=false;
 
-	vidGrabberThree.setVerbose(true);
-	vidGrabberThree.setDeviceID(0);
-	vidGrabberThree.initGrabber(camWidth,camHeight);
+    textOneChar=0;
+    textTwoChar=0;
 
-	videoInverted 	= new unsigned char[camWidth*camHeight*3];
-	videoTextureOne.allocate(camWidth,camHeight, GL_RGB);
-	videoTextureTwo.allocate(camWidth,camHeight, GL_RGB);
-	videoTextureThree.allocate(camWidth,camHeight, GL_RGB);
-
-	apolloMovie.loadMovie("apollo11.mp4");
-	apolloMovie.setLoopState(OF_LOOP_NONE);
-
+    drohneOneImage.loadImage("stage.tga");
     msbSetup();
 
     loadSettings();
@@ -56,7 +51,8 @@ void testApp::setup(){
     interfaceSetup();
 
 
-    myFont.loadFont("verdana.ttf",150);
+    drohneOneFont.loadFont("DroidSans.ttf",fontSizeOne,true,true);
+    drohneTwoFont.loadFont("DroidSans.ttf",fontSizeTwo,true,true);
 
 }
 
@@ -85,168 +81,295 @@ void testApp::msbSetup(){
 
 void testApp::registerProperties(){
 
-    createMemberID("PROJECTORPOS",&projectorPos,this);
+    createMemberID("TEXTSPEEDONE",&textSpeedOne,this);
+    createMemberID("TEXTSPEEDTWO",&textSpeedTwo,this);
+    createMemberID("FONTSIZEONE",&fontSizeOne,this);
+    createMemberID("FONTSIZETWO",&fontSizeTwo,this);
 }
+
+void testApp::interfaceSetup(){
+
+    TextInputButton *but;
+
+    //TYPING SPEED
+
+    but= new TextInputButton();
+    but->name="txtSpeed";
+    but->buttonProperty="TEXTSPEEDONE";
+    but->bDrawName=true;
+    but->tooltip="Drohne 1 Text Speed";
+    but->setLocation(Vector3f(20,250,0));
+    but->scale.x=128;
+    but->scale.y=20;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->bShowCursor=true;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="txtSpeed";
+    but->buttonProperty="TEXTSPEEDTWO";
+    but->bDrawName=true;
+    but->tooltip="Drohne 2 Text Speed";
+    but->setLocation(Vector3f(20,550,0));
+    but->scale.x=128;
+    but->scale.y=20;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->bShowCursor=true;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+
+    //FONT SIZE
+
+    but= new TextInputButton();
+    but->name="FontSizeOne";
+    but->buttonProperty="FONTSIZEONE";
+    but->bDrawName=true;
+    but->tooltip="Drohne Font Size";
+    but->setLocation(Vector3f(20,280,0));
+    but->scale.x=128;
+    but->scale.y=20;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->bShowCursor=true;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="FontSizeTwo";
+    but->buttonProperty="FONTSIZETWO";
+    but->bDrawName=true;
+    but->tooltip="Drohne Font Size";
+    but->setLocation(Vector3f(20,580,0));
+    but->scale.x=128;
+    but->scale.y=20;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->bShowCursor=true;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+
+    textFieldSetup();
+
+}
+
+void testApp::textFieldSetup(){
+
+    //Adding MSB content
+    TextInputButton *but;
+
+    but= new TextInputButton();
+    but->name="Drohne1";
+    but->buttonProperty="NULL";
+    but->bDrawName=true;
+    but->tooltip="Was fuer ein toller\nTag!";
+    but->setLocation(Vector3f(20,100,0));
+    but->scale.x=128;
+    but->scale.y=32;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.0,0.5,0.0,1.0);
+    but->bShowCursor=true;
+    but->setup();
+    renderer->buttonList.push_back(but);
+    drohneOne=but;
+
+    but= new TextInputButton();
+    but->name="Drohne2";
+    but->buttonProperty="NULL";
+    but->bDrawName=true;
+    but->tooltip="ja, find ich auch!";
+    but->setLocation(Vector3f(20,400,0));
+    but->scale.x=128;
+    but->scale.y=32;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.0,0.0,0.50,1.0);
+    but->bShowCursor=true;
+    but->setup();
+    renderer->buttonList.push_back(but);
+    drohneTwo=but;
+
+    AssignButton* bb= new AssignButton;
+    bb->name="show1";
+    bb->buttonProperty="NULL";
+    bb->bDrawName=true;
+    bb->tooltip="";
+    bb->setLocation(Vector3f(20,140,0));
+    bb->scale.x=64;
+    bb->scale.y=64;
+    bb->textureID="icon_flat";
+    bb->parent=this;
+    bb->color=Vector4f(0.5,0.0,0.0,1.0);
+    bb->setup();
+    renderer->buttonList.push_back(bb);
+
+    bb= new AssignButton;
+    bb->name="show2";
+    bb->buttonProperty="NULL";
+    bb->bDrawName=true;
+    bb->tooltip="";
+    bb->setLocation(Vector3f(20,440,0));
+    bb->scale.x=64;
+    bb->scale.y=64;
+    bb->textureID="icon_flat";
+    bb->parent=this;
+    bb->color=Vector4f(0.5,0.0,0.0,1.0);
+    bb->setup();
+    renderer->buttonList.push_back(bb);
+}
+
 
 
 //--------------------------------------------------------------
 void testApp::update(){
 
+    //Add linebreaks to the input text
+    //tooltips are updated from inputText, so the linebreaks auto-transfer
+    //also reset drawing animation when editing text
+    if(input->focusButton==drohneOne){
+        textOneChar=0;
+        input->inputText=linebreak(input->inputText, &drohneOneFont);
+    }
+    if(input->focusButton==drohneTwo){
+        textTwoChar=0;
+        input->inputText=linebreak(input->inputText, &drohneTwoFont);
+    }
+
+
+
+    // TEXT ANIMATION
+    //do not update DrohneText, if we are editing it right now!
+    if (bShowTextOne && input->focusButton!=drohneOne){
+        textOneChar+=renderer->deltaTime*textSpeedOne*0.01;
+        textOneChar=min(textOneChar,float(drohneOne->tooltip.size()));
+        drohneOneText=drohneOne->tooltip.substr(0,int(textOneChar));
+    }
+    if (bShowTextTwo && input->focusButton!=drohneTwo){
+        textTwoChar+=renderer->deltaTime*textSpeedTwo*0.01;
+        textTwoChar=min(textTwoChar,float(drohneTwo->tooltip.size()));
+        drohneTwoText=drohneTwo->tooltip.substr(0,int(textTwoChar));
+    }
+
     renderer->update();
-    apolloMovie.update();
-	ofBackground(100,100,100);
-
-    theText=linebreak(myBut->tooltip);
-
-	vidGrabberOne.update();
-	vidGrabberTwo.update();
-	vidGrabberThree.update();
-
-
-	if (vidGrabberThree.isFrameNew()){
-		int totalPixels = camWidth*camHeight*3;
-		unsigned char * pixels = vidGrabberThree.getPixels();
-		for (int i = 0; i < totalPixels; i++){
-			videoInverted[i] = 255 - pixels[i];
-		}
-//		videoTexture.loadData(videoInverted, camWidth,camHeight, GL_RGB);
-	}
 
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
 
-	ofNoFill();
-	ofSetHexColor(0xffffff);
-
-	if (selectedCam==1){
-        ofSetHexColor(0xff0000);
-        ofRect(10,10,340,220);
-	}
-	if (selectedCam==2){
-        ofSetHexColor(0xff0000);
-        ofRect(370,10,340,220);
-	}
-	if (selectedCam==3){
-        ofSetHexColor(0xff0000);
-        ofRect(10,250,340,220);
-	}
-	ofSetHexColor(0xffffff);
-	vidGrabberOne.draw(20,30,320,180);
-	apolloMovie.draw(380,30,320,180);
-
-        ofFill();
-        ofSetHexColor(0x555555);
-        ofRect(20,270,320,180);
-        ofNoFill();
-
-        ofFill();
-        ofSetHexColor(0x000000);
-        ofRect(380,270,320,180);
-        ofNoFill();
-
-    ofSetHexColor(0xffffff);
-
-	if (selectedCam==1){
-        vidGrabberOne.draw(projectorPos,0,1280,720);
-	}
-	if (selectedCam==2){
-        apolloMovie.draw(projectorPos,0,1280,720);
-	}
-	if (selectedCam==3){
-        drawText();
-	}
-	if (selectedCam==4){
-        ofFill();
-        ofSetHexColor(0x000000);
-        ofRect(projectorPos,0,1280,720);
-        ofNoFill();
-	}
-
+	ofBackground(100,100,100);
 
     renderer->draw();
-}
 
-void testApp::drawText(){
+    //why we have to do this, i have no idea!
+    //if we don't do it, font drawing doesn't work!
+    drohneOneImage.draw(0,0,-100,-100);
+
+    ofSetColor(255,255,255);
 
     ofPushMatrix();
-    ofTranslate(projectorPos,200);
+        ofTranslate(xOffset,yOffset);
+        ofScale(0.5,0.5);
+        ofSetColor(20,20,30);
+        ofRect(0,0,1920,1080);
 
-    //ofScale(0.25,0.25);
-    //ofRect(0,0,1280,720);
+        ofSetColor(255,255,255);
+        ofRect(955,0,10,1080);
 
 
-    ofScale(720.0/myFont.stringWidth(theText),720.0/myFont.stringWidth(theText));
-    myFont.drawString(theText,0,myFont.stringHeight(theText));
+        // only show pictures after text os finished displaying...
+        if (bShowTextOne)
+            drohneOneFont.drawString(drohneOneText,5,drohneOneFont.stringHeight("A")+10);
+
+        if (bShowImageOne && textOneChar==drohneOneText.size())
+            drohneOneImage.draw(5,drohneOneFont.stringHeight(drohneOneText)+10);
+
+
+
+        // only show pictures after text os finished displaying...
+        if (bShowTextTwo)
+            drohneTwoFont.drawString(drohneTwoText,970,drohneTwoFont.stringHeight("A")+10);
+
+        if (bShowImageTwo&& textTwoChar==drohneTwoText.size())
+            drohneTwoImage.draw(975,drohneTwoFont.stringHeight(drohneTwoText)+10);
+
     ofPopMatrix();
-
 
 }
 
-string testApp::linebreak(string text){
 
-    cout << "Text before: " << text << endl;
+string testApp::linebreak(string text, ofTrueTypeFont* myFont){
 
-
-    int currentline = 1;
-    int lineBegin = 0;
-
-    unsigned pos = text.find(' ');         // position first space in text
-
-    if (pos==string::npos){
-        cout << "did not find a line-breakable character" << endl;
-        return text;
+    //always go from the back of the text
+    unsigned foundBreak = text.find_last_of("\n");
+    string lastLine= text.substr(foundBreak+1);
+    //are we over capacity? then let's insert a linebreak at the last space we find
+    if (myFont->stringWidth(lastLine)>850){
+        //so let's do it!
+        //Find a whitespace
+         unsigned foundSpace= lastLine.find_last_of(' ');
+         text.replace(foundBreak+foundSpace+1,1,"\n");
     }
 
-    unsigned breakPos=pos;
-    std::string myLine = text.substr (0);
 
-    //while  (currentline < 5){
-        //if line is too long
-        if (myFont.stringWidth(myLine)>1280){
-            //find last space
-            pos = myLine.find_last_of(' ');
-            //found no space in this line!
-            if (pos==string::npos){
-                cout << "no linebreaks possible, because no spaces in this line!" << endl;
-                return text;
-            }
-            //new Line!
-            text.erase(text.begin()+pos);
-            text.insert(pos,"\n");
-        }
-
-        myLine = text.substr (pos);
-        cout << "new line!" << endl;
-        //text is now longer, so adjust accordingly
-        //breakPos++;
-        //pos++;
-
-        lineBegin=breakPos;
-        currentline++;
-
-        cout << "new line is this long: " << myFont.stringWidth(myLine) << endl;
-  //}
-
-  return text;
+    return text;
 
 }
 
 
 void testApp::trigger(Actor* other){
 
-
-    if (other->name=="thresholdSlider"){
-
-
+    if (other->name=="show1"){
+        bShowTextOne=!bShowTextOne;
+        textOneChar=0;
     }
 
-    if (other->name=="stefano"){
-
-        cout << "hippie!!!" << endl;
-
+    if (other->name=="show2"){
+        bShowTextTwo=!bShowTextTwo;
+        textTwoChar=0;
     }
+
+    if (other->name=="Drohne1"){
+        bShowTextOne=true;
+        textOneChar=0;
+        bShowImageOne=parseForImage(&drohneOneImage,drohneOne->tooltip);
+    }
+
+    if (other->name=="Drohne2"){
+        bShowTextTwo=true;
+        textTwoChar=0;
+        bShowImageTwo=parseForImage(&drohneTwoImage,drohneTwo->tooltip);
+    }
+
+    if (other->name=="FontSizeOne"){
+        drohneOneFont.loadFont("DroidSans.ttf",fontSizeOne,true,true);
+    }
+
+    if (other->name=="FontSizeTwo"){
+        drohneTwoFont.loadFont("DroidSans.ttf",fontSizeTwo,true,true);
+    }
+}
+
+bool testApp::parseForImage(ofImage* myImage, string text){
+
+    unsigned fileStart=text.find('<');
+    if (fileStart==string::npos){
+        return false;
+    }
+    unsigned fileEnd=text.find('>');
+    string imgFile=text.substr(fileStart+1,fileEnd-fileStart-1);
+    cout << " found image filename: " << imgFile << endl;
+    return myImage->loadImage(imgFile);
+
 }
 
 //--------------------------------------------------------------
@@ -258,48 +381,9 @@ void testApp::keyPressed  (int key){
 	// use alt-tab to navigate to the settings
 	// window. we are working on a fix for this...
 
-	if (key=='1'){
-        selectedCam=1;
-        apolloMovie.stop();
-        apolloMovie.firstFrame();
-        return;
-	}
-	if (key=='2'){
-        selectedCam=2;
-        apolloMovie.play();
-        return;
-	}
-	if (key=='3'){
-        selectedCam=3;
-        apolloMovie.stop();
-        apolloMovie.firstFrame();
-        return;
-        //myBut->clickedLeft();
-
-	}
-	if (key=='4'){
-        selectedCam=4;
-        apolloMovie.stop();
-        apolloMovie.firstFrame();
-        return;
-	}
-
-
     input->normalKeyDown(key,mouseX,mouseY);
     if (input->bTextInput)
         return;
-
-
-	if (key == 's' || key == 'S'){
-		vidGrabberOne.videoSettings();
-		vidGrabberTwo.videoSettings();
-		vidGrabberThree.videoSettings();
-	}
-
-
-    if (key==13){
-        myBut->clickedLeft();
-    }
 
 }
 
@@ -311,10 +395,6 @@ void testApp::keyReleased(int key){
 
     if (input->bTextInput)
         return;
-
-    if (key==' ')
-        apolloMovie.play();
-
 }
 
 //--------------------------------------------------------------
@@ -362,37 +442,11 @@ void testApp::loadSettings(){
     int listPos=0;
     string myType;
 
-      for( ; element!=NULL; element=element->NextSiblingElement("Actor"))
-        {
+      for( ; element!=NULL; element=element->NextSiblingElement("Actor")){
         myType=element->GetText();
         cout << "Loading property type: " << myType << endl;
         load(element);
         listPos++;
         }
 }
-
-void testApp::interfaceSetup(){
-
-    //Adding MSB content
-    TextInputButton *but;
-
-    //anderes
-    but= new TextInputButton();
-    but->name="TextFeld";
-    but->buttonProperty="NULL";
-    but->bDrawName=true;
-    but->tooltip="";
-    but->setLocation(Vector3f(20,270,0));
-    but->scale.x=64;
-    but->scale.y=18;
-    but->textureID="icon_flat";
-    but->parent=this;
-    but->color=Vector4f(0.5,0.5,0.5,1.0);
-    but->bShowCursor=false;
-    but->setup();
-    renderer->buttonList.push_back(but);
-    myBut=but;
-
-}
-
 
