@@ -11,6 +11,8 @@
 #include "assignButton.h"
 #include "sliderButton.h"
 
+#include "dataHandlerDialog.h"
+
 
 
 #define SCREENRESX 1920
@@ -52,12 +54,16 @@ class testApp : public ofBaseApp, public Actor{
 
         void textFieldSetup();
 
+        void setTextFromBeat(int b, bool bPlayVoice=true);
+
         string linebreak(string text,ofTrueTypeFont* myFont);
 
         ofImage             drohneOneImage;
         ofImage             drohneTwoImage;
 		BasicButton*        drohneOne;
 		BasicButton*        drohneTwo;
+
+		SliderButton*       sli;
 
 		ofTrueTypeFont      drohneOneFont;
 		ofTrueTypeFont      drohneTwoFont;
@@ -78,6 +84,10 @@ class testApp : public ofBaseApp, public Actor{
 
 		//for animation
 		float               textOneChar,textTwoChar;
+
+		DataHandlerDialog*  myData;
+		int                 beat;
+
 };
 
 #endif

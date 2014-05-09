@@ -1,6 +1,5 @@
 #include "testApp.h"
 
-
 testApp::testApp(){}
 
 testApp::~testApp(){
@@ -24,7 +23,7 @@ void testApp::setup(){
 	drohneOneText="";
 	drohneTwoText="";
 	xOffset=400;
-	yOffset=100;
+	yOffset=50;
 
     fontSizeOne=72;
     fontSizeTwo=72;
@@ -50,9 +49,14 @@ void testApp::setup(){
 
     interfaceSetup();
 
+    //always set beat to zero at Beginning!
+    beat=0;
 
     drohneOneFont.loadFont("DroidSans.ttf",fontSizeOne,true,true);
     drohneTwoFont.loadFont("DroidSans.ttf",fontSizeTwo,true,true);
+
+    myData= new DataHandlerDialog;
+    myData->setup("dialoge\\dialog.xml");
 
 }
 
@@ -85,6 +89,7 @@ void testApp::registerProperties(){
     createMemberID("TEXTSPEEDTWO",&textSpeedTwo,this);
     createMemberID("FONTSIZEONE",&fontSizeOne,this);
     createMemberID("FONTSIZETWO",&fontSizeTwo,this);
+    createMemberID("BEAT",&beat,this);
 }
 
 void testApp::interfaceSetup(){
@@ -157,6 +162,40 @@ void testApp::interfaceSetup(){
     renderer->buttonList.push_back(but);
 
 
+    //BEAT INFO
+
+
+    but= new TextInputButton();
+    but->name="Next Beat";
+    but->buttonProperty="BEAT";
+    but->bDrawName=true;
+    but->tooltip="momentaner Beat";
+    but->setLocation(Vector3f(20,610,0));
+    but->scale.x=128;
+    but->scale.y=20;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->bShowCursor=true;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
+    sli= new SliderButton();
+    sli->name="Scroll to beat";
+    sli->buttonProperty="NULL";
+    sli->bDrawName=false;
+    sli->tooltip="Scroll Beat";
+    sli->setLocation(Vector3f(300,200,0));
+    sli->bTriggerWhileDragging=true;
+    //sli->
+    sli->scale.x=20;
+    sli->scale.y=400;
+    sli->textureID="icon_flat";
+    sli->parent=this;
+    sli->color=Vector4f(0.4,0.4,0.4,1.0);
+    sli->setup();
+    renderer->buttonList.push_back(sli);
+
     textFieldSetup();
 }
 
@@ -198,13 +237,13 @@ void testApp::textFieldSetup(){
     drohneTwo=but;
 
     AssignButton* bb= new AssignButton;
-    bb->name="show1";
+    bb->name="insert1";
     bb->buttonProperty="NULL";
     bb->bDrawName=true;
     bb->tooltip="";
     bb->setLocation(Vector3f(20,140,0));
-    bb->scale.x=64;
-    bb->scale.y=64;
+    bb->scale.x=60;
+    bb->scale.y=60;
     bb->textureID="icon_flat";
     bb->parent=this;
     bb->color=Vector4f(0.5,0.40,0.40,1.0);
@@ -212,13 +251,41 @@ void testApp::textFieldSetup(){
     renderer->buttonList.push_back(bb);
 
     bb= new AssignButton;
-    bb->name="show2";
+    bb->name="replace1";
+    bb->buttonProperty="NULL";
+    bb->bDrawName=true;
+    bb->tooltip="";
+    bb->setLocation(Vector3f(88,140,0));
+    bb->scale.x=60;
+    bb->scale.y=60;
+    bb->textureID="icon_flat";
+    bb->parent=this;
+    bb->color=Vector4f(0.5,0.40,0.40,1.0);
+    bb->setup();
+    renderer->buttonList.push_back(bb);
+
+    bb= new AssignButton;
+    bb->name="insert2";
     bb->buttonProperty="NULL";
     bb->bDrawName=true;
     bb->tooltip="";
     bb->setLocation(Vector3f(20,440,0));
-    bb->scale.x=64;
-    bb->scale.y=64;
+    bb->scale.x=60;
+    bb->scale.y=60;
+    bb->textureID="icon_flat";
+    bb->parent=this;
+    bb->color=Vector4f(0.5,0.40,0.40,1.0);
+    bb->setup();
+    renderer->buttonList.push_back(bb);
+
+    bb= new AssignButton;
+    bb->name="replace2";
+    bb->buttonProperty="NULL";
+    bb->bDrawName=true;
+    bb->tooltip="";
+    bb->setLocation(Vector3f(88,440,0));
+    bb->scale.x=60;
+    bb->scale.y=60;
     bb->textureID="icon_flat";
     bb->parent=this;
     bb->color=Vector4f(0.5,0.40,0.40,1.0);
@@ -227,9 +294,42 @@ void testApp::textFieldSetup(){
 }
 
 
+void testApp::setTextFromBeat(int b, bool bPlayVoice){
 
+    if (b>=myData->dialog.size() || b<0 ){
+        cout << "reached end of dialogue: " << myData->dialog.size() << endl;
+        drohneOne->tooltip="";
+        drohneTwo->tooltip="";
+        return;
+    }
+
+    if (myData->dialog[b].whoIs==1){
+        drohneOne->tooltip=linebreak(myData->dialog[b].dialogText, &drohneOneFont);
+        bShowTextOne=true;
+        bShowTextTwo=false;
+        bShowImageOne=parseForImage(&drohneOneImage,drohneOne->tooltip);
+        bShowImageTwo=false;
+        textOneChar=0;
+        if (bPlayVoice && myData->dialog[b].dialogVoice.isLoaded())
+            myData->dialog[b].dialogVoice.play();
+    }
+    if (myData->dialog[b].whoIs==2){
+        drohneTwo->tooltip=linebreak(myData->dialog[b].dialogText, &drohneTwoFont);
+        bShowTextTwo=true;
+        bShowTextOne=false;
+        bShowImageTwo=parseForImage(&drohneTwoImage,drohneTwo->tooltip);
+        bShowImageOne=false;
+        textTwoChar=0;
+        if (bPlayVoice && myData->dialog[b].dialogVoice.isLoaded())
+            myData->dialog[b].dialogVoice.play();
+    }
+
+}
 //--------------------------------------------------------------
 void testApp::update(){
+
+    //update slider
+    sli->sliderValue=max(0.0f, min((float)beat/(float)myData->dialog.size(),1.0f));
 
     //Add linebreaks to the input text
     //tooltips are updated from inputText, so the linebreaks auto-transfer
@@ -265,7 +365,7 @@ void testApp::update(){
 //--------------------------------------------------------------
 void testApp::draw(){
 
-	ofBackground(100,100,100);
+	ofBackground(100,100,105);
 
     renderer->draw();
 
@@ -277,19 +377,58 @@ void testApp::draw(){
 
     ofPushMatrix();
         ofTranslate(xOffset,yOffset);
-        ofScale(0.5,0.5);
+
+        //window dressing
+        ofScale(0.4,0.4);
         ofSetColor(40,40,40);
         ofRect(0,0,1920,1080);
 
         ofSetColor(255,255,255);
         ofRect(955,0,10,1080);
 
+        //PREVIEW
+        ofSetColor(240,240,180);
 
+        int i=0;
+        float yPO=SCREENRESY+drohneOneFont.stringHeight("A") + 100;
+        while(beat+i<myData->dialog.size()){
+
+            stringstream ss;
+            ss << beat+i;
+
+            if (myData->dialog[beat+i].whoIs==1){
+                string previewText=linebreak(myData->dialog[beat+i].dialogText,&drohneOneFont);
+                ofSetColor(255,100,100);
+                drohneOneFont.drawString(ss.str()+".)",-drohneOneFont.stringWidth(ss.str()+".)"),yPO);
+                ofSetColor(200,200,180);
+                drohneOneFont.drawString(previewText,5,yPO);
+                yPO += drohneOneFont.stringHeight(previewText)+drohneOneFont.stringHeight("A");
+            }else{
+                string previewText=linebreak(myData->dialog[beat+i].dialogText,&drohneTwoFont);
+                ofSetColor(255,100,100);
+                drohneTwoFont.drawString(ss.str()+".)",965-drohneTwoFont.stringWidth(ss.str()+".)"),yPO);
+                ofSetColor(200,200,180);
+                drohneTwoFont.drawString(previewText,970,yPO);
+                yPO += drohneTwoFont.stringHeight(previewText)+drohneTwoFont.stringHeight("A");
+            }
+
+            i++;
+        }
+
+        //END PREVIEW
+
+        ofSetColor(255,255,100);
+        stringstream ss;
+        ss << beat-1;
+        drohneOneFont.drawString(ss.str()+".)",-10-drohneOneFont.stringWidth(ss.str()+".)"),drohneOneFont.stringHeight("A")+10);
+
+        ofSetColor(255,255,255);
+        //proper text animation
         // only show pictures after text os finished displaying...
         if (bShowTextOne)
             drohneOneFont.drawString(drohneOneText,5,drohneOneFont.stringHeight("A")+10);
 
-        if (bShowImageOne && textOneChar==drohneOneText.size())
+        if (bShowImageOne && textOneChar==drohneOne->tooltip.size())
             drohneOneImage.draw(5,drohneOneFont.stringHeight(drohneOneText)+10);
 
 
@@ -298,7 +437,7 @@ void testApp::draw(){
         if (bShowTextTwo)
             drohneTwoFont.drawString(drohneTwoText,970,drohneTwoFont.stringHeight("A")+10);
 
-        if (bShowImageTwo&& textTwoChar==drohneTwoText.size())
+        if (bShowImageTwo&& textTwoChar==drohneTwo->tooltip.size())
             drohneTwoImage.draw(975,drohneTwoFont.stringHeight(drohneTwoText)+10);
 
     ofPopMatrix();
@@ -308,17 +447,44 @@ void testApp::draw(){
 
 string testApp::linebreak(string text, ofTrueTypeFont* myFont){
 
-    //always go from the back of the text
-    unsigned foundBreak = text.find_last_of("\n");
-    string lastLine= text.substr(foundBreak+1);
-    //are we over capacity? then let's insert a linebreak at the last space we find
-    if (myFont->stringWidth(lastLine)>850){
-        //so let's do it!
-        //Find a whitespace
-         unsigned foundSpace= lastLine.find_last_of(' ');
-         text.replace(foundBreak+foundSpace+1,1,"\n");
+
+    //always go from the back of the text - THIS ONLY WORKS WHEN WE TYPE! NOT WITH PREDEFINED TEXT!
+    if (input->bTextInput){
+        unsigned foundBreak = text.find_last_of("\n");
+        string lastLine= text.substr(foundBreak+1);
+        //are we over capacity? then let's insert a linebreak at the last space we find
+        if (myFont->stringWidth(lastLine)>850){
+            //so let's do it!
+            //Find a whitespace
+             unsigned foundSpace= lastLine.find_last_of(' ');
+             text.replace(foundBreak+foundSpace+1,1,"\n");
+        }
+        return text;
     }
 
+    //go through text from front
+    //if we found text to be too wide -
+        //go back to last whitespace
+        //insert \n
+    //continue with new line
+
+    unsigned foundSpace=0;
+    unsigned lastSpace=0;
+
+    while (foundSpace!=string::npos){
+        string firstLine=text.substr(0,foundSpace);
+        if (myFont->stringWidth(firstLine)>850){
+            //put linebreak in lastSpace
+            text.replace(lastSpace,1,"\n");
+        }else{
+            lastSpace=foundSpace;
+        }
+        //search for next space...
+        foundSpace= text.find(' ',foundSpace+1);
+    }
+    //special for one liners
+    if (myFont->stringWidth(text)>850 && lastSpace>0)
+        text.replace(lastSpace,1,"\n");
 
     return text;
 
@@ -327,23 +493,87 @@ string testApp::linebreak(string text, ofTrueTypeFont* myFont){
 
 void testApp::trigger(Actor* other){
 
-    if (other->name=="show1"){
-        bShowTextOne=!bShowTextOne;
-        textOneChar=0;
+    input->bTextInput=false;
+
+    if (other->name=="Scroll to beat"){
+        sli=(SliderButton*)other;
+        beat=sli->sliderValue * (myData->dialog.size());
+        setTextFromBeat(beat-1, false);
+    }
+    if (other->name=="Next Beat"){
+        sli->sliderValue= beat/myData->dialog.size();
     }
 
-    if (other->name=="show2"){
-        bShowTextTwo=!bShowTextTwo;
-        textTwoChar=0;
+
+    if (other->name=="insert1"){
+        dialogPart newDialogPart;
+        newDialogPart.dialogText=drohneOne->tooltip;
+        newDialogPart.whoIs=1;
+        newDialogPart.dialogVoiceFile="NULL";
+        myData->dialog.insert(myData->dialog.begin()+beat,newDialogPart);
+        //void all further sound files?
+        for (int i=beat;i<myData->dialog.size();i++){
+            myData->dialog[i].dialogVoiceFile="NULL";
+        }
     }
+
+    if (other->name=="insert2"){
+        dialogPart newDialogPart;
+        newDialogPart.dialogText=drohneTwo->tooltip;
+        newDialogPart.whoIs=2;
+        newDialogPart.dialogVoiceFile="NULL";
+        myData->dialog.insert(myData->dialog.begin()+beat,newDialogPart);
+        //void all further sound files?
+        for (int i=beat;i<myData->dialog.size();i++){
+            myData->dialog[i].dialogVoiceFile="NULL";
+        }
+    }
+
+
+
+    if (other->name=="replace1"){
+        if (beat<0){
+            cout << "cannot replace that which is not yet present!" << endl;
+            return;
+        }
+        myData->dialog[beat-1].dialogText=drohneOne->tooltip;
+        myData->dialog[beat-1].whoIs=1;
+        myData->dialog[beat-1].dialogVoiceFile="NULL";
+    }
+
+    if (other->name=="replace2"){
+        if (beat<0){
+            cout << "cannot replace that which is not yet present!" << endl;
+            return;
+        }
+        myData->dialog[beat-1].dialogText=drohneTwo->tooltip;
+        myData->dialog[beat-1].whoIs=2;
+        myData->dialog[beat-1].dialogVoiceFile="NULL";
+    }
+
 
     if (other->name=="Drohne1"){
+        //delete a post?
+        if (drohneOne->tooltip=="NULL"){
+            myData->dialog.erase(myData->dialog.begin()+beat);
+            for (int i=beat;i<myData->dialog.size();i++){
+                myData->dialog[i].dialogVoiceFile="NULL";
+            }
+        }
+
         bShowTextOne=true;
         textOneChar=0;
         bShowImageOne=parseForImage(&drohneOneImage,drohneOne->tooltip);
     }
 
     if (other->name=="Drohne2"){
+        //delete a post?
+        if (drohneOne->tooltip=="NULL"){
+            myData->dialog.erase(myData->dialog.begin()+beat);
+            for (int i=beat;i<myData->dialog.size();i++){
+                myData->dialog[i].dialogVoiceFile="NULL";
+            }
+        }
         bShowTextTwo=true;
         textTwoChar=0;
         bShowImageTwo=parseForImage(&drohneTwoImage,drohneTwo->tooltip);
@@ -360,11 +590,11 @@ void testApp::trigger(Actor* other){
 
 bool testApp::parseForImage(ofImage* myImage, string text){
 
-    unsigned fileStart=text.find('<');
+    unsigned fileStart=text.find('[');
     if (fileStart==string::npos){
         return false;
     }
-    unsigned fileEnd=text.find('>');
+    unsigned fileEnd=text.find(']');
     string imgFile=text.substr(fileStart+1,fileEnd-fileStart-1);
     cout << " found image filename: " << imgFile << endl;
     return myImage->loadImage(imgFile);
@@ -394,6 +624,18 @@ void testApp::keyReleased(int key){
 
     if (input->bTextInput)
         return;
+
+    if (key==OF_KEY_UP)
+        setTextFromBeat(--beat-1);
+
+    if (key==' ' || key==OF_KEY_DOWN)
+        setTextFromBeat(beat++);
+
+    if (key=='S'){
+        cout << "saving..."<<endl;
+        myData->writeTextToFile("dialog.xml");
+    }
+
 }
 
 //--------------------------------------------------------------

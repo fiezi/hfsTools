@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<Dronedialog>
+    <SETTINGS Drone1Voice="Yannick" Drone2Voice="Markus" SystemVoice="Anna-ML" />
+    <BEAT>
+        <TEXT WHO="1">Hey! wie cool!</TEXT>
+        <VOICE>0.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">[happy.jpg]</TEXT>
+        <VOICE>1.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">Find ich nicht...</TEXT>
+        <VOICE>2.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">[grumpy.jpg]</TEXT>
+        <VOICE>3.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">jetzt mach doch mal nicht so doof!</TEXT>
+        <VOICE>4.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">wieso denn nicht?</TEXT>
+        <VOICE>5.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">ach, is doch sinnlos...</TEXT>
+        <VOICE>6.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">Doch, total!</TEXT>
+        <VOICE>7.wav</VOICE>
+    </BEAT>
+</Dronedialog>
