@@ -10,6 +10,11 @@ DataHandlerDialog::~DataHandlerDialog(){
 
 void DataHandlerDialog::setup(string dialogFile){
 
+    for (int i=0;i<3;i++){
+        pitches[i]="100";
+        speeds[i]="100";
+    }
+
     cout << "loading dialog from: " << dialogFile << endl;
     dialogFileName=dialogFile;
     readTextFromFile("data\\"+dialogFile);
@@ -31,6 +36,8 @@ void DataHandlerDialog::makeVoiceFile(dialogPart* dp, int beatNumber){
 
     string command="\"C:\\Program Files (x86)\\Linguatec\\VoiceReaderStudio15\\vrs15cmd.exe\" ";
     command+= "voice="+voices[dp->whoIs]+ " ";
+    command+= "pitch="+pitches[dp->whoIs]+" ";
+    command+= "speed="+speeds[dp->whoIs]+" ";
     command+= "format=wav ";
     command+= "input=data\\voice\\"+ ss.str()+".txt ";
     command+= "codepage=65001 coding=9 ";
@@ -74,9 +81,9 @@ void DataHandlerDialog::makeVoiceFile(dialogPart* dp, int beatNumber){
         hRes = Process32Next(hSnapShot, &pEntry);
     }
     CloseHandle(hSnapShot);
-    Sleep(100);
+    Sleep(200);
     dp->dialogVoiceFile=ss.str()+".wav";
-    dp->dialogVoice.loadSound(dp->dialogVoiceFile);
+    dp->dialogVoice.loadSound("voice\\"+dp->dialogVoiceFile);
 
 }
 
@@ -171,13 +178,22 @@ void DataHandlerDialog::readTextFromFile(string filename){
     if (!element)
         cout << "no settings element found!" << endl;
     //GLOBAL SETTINGS:
-    droneOneVoice=element->Attribute("Drone1Voice");
-    droneTwoVoice= element->Attribute("Drone2Voice");
-    systemVoice=element->Attribute("SystemVoice");
+    voices[1]=element->Attribute("Drone1Voice");
+    voices[2]= element->Attribute("Drone2Voice");
+    voices[0]=element->Attribute("SystemVoice");
 
-    voices[0]=systemVoice;
-    voices[1]=droneOneVoice;
-    voices[2]=droneTwoVoice;
+
+    pitches[1]=element->Attribute("Drone1Pitch");
+    pitches[2]=element->Attribute("Drone2Pitch");
+    pitches[0]=element->Attribute("SystemPitch");
+
+
+    speeds[1]=element->Attribute("Drone1Speed");
+    speeds[2]=element->Attribute("Drone2Speed");
+    speeds[0]=element->Attribute("SystemSpeed");
+
+
+
 
         cout << "loaded global voice settings..." << endl;
 
@@ -219,10 +235,13 @@ void DataHandlerDialog::readTextFromFile(string filename){
         xmlProperty=element->FirstChildElement("VOICE");
         if (xmlProperty && xmlProperty->GetText()!=NULL){        //check if the saved file has this element
             myBeat.dialogVoiceFile=xmlProperty->GetText();
-            if (myBeat.dialogVoiceFile!="NULL")
-                myBeat.dialogVoice.loadSound("voice\\" + myBeat.dialogVoiceFile);
-            else
+            if (myBeat.dialogVoiceFile!="NULL"){
+                if (myBeat.dialogVoice.loadSound("voice\\" + myBeat.dialogVoiceFile)==false)
+                    makeVoiceFile(&myBeat,dialog.size());
+            }
+            else{
                 makeVoiceFile(&myBeat,dialog.size());
+            }
         }
         else{
             cout << "no voice in beat. Generating..." << endl;
@@ -250,6 +269,15 @@ void DataHandlerDialog::writeTextToFile(string filename){
     settingsElement->SetAttribute("Drone1Voice",droneOneVoice);
     settingsElement->SetAttribute("Drone2Voice",droneTwoVoice);
     settingsElement->SetAttribute("SystemVoice",systemVoice);
+
+    settingsElement->SetAttribute("Drone1Pitch",pitches[1]);
+    settingsElement->SetAttribute("Drone2Pitch",pitches[2]);
+    settingsElement->SetAttribute("SystemPitch",pitches[0]);
+
+    settingsElement->SetAttribute("Drone1Speed",speeds[1]);
+    settingsElement->SetAttribute("Drone2Speed",speeds[2]);
+    settingsElement->SetAttribute("SystemSpeed",speeds[0]);
+
     root->LinkEndChild(settingsElement);
     cout << "saved global voice settings..." << endl;
 

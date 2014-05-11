@@ -14,6 +14,8 @@ testApp::~testApp(){
     root->LinkEndChild(myElement);
     doc.SaveFile("userConfig.xml");
 
+    myData->readTextFromFile("dialog.xml");
+
 }
 
 
@@ -41,6 +43,8 @@ void testApp::setup(){
 
     textOneChar=0;
     textTwoChar=0;
+
+    linebreakWidth=480;
 
     drohneOneImage.loadImage("stage.tga");
     msbSetup();
@@ -85,6 +89,7 @@ void testApp::msbSetup(){
 
 void testApp::registerProperties(){
 
+    createMemberID("LINEBREAKWIDTH",&linebreakWidth,this);
     createMemberID("TEXTSPEEDONE",&textSpeedOne,this);
     createMemberID("TEXTSPEEDTWO",&textSpeedTwo,this);
     createMemberID("FONTSIZEONE",&fontSizeOne,this);
@@ -169,7 +174,7 @@ void testApp::interfaceSetup(){
     but->name="Next Beat";
     but->buttonProperty="BEAT";
     but->bDrawName=true;
-    but->tooltip="momentaner Beat";
+    but->tooltip="naechster Beat";
     but->setLocation(Vector3f(20,610,0));
     but->scale.x=128;
     but->scale.y=20;
@@ -179,6 +184,22 @@ void testApp::interfaceSetup(){
     but->bShowCursor=true;
     but->setup();
     renderer->buttonList.push_back(but);
+
+    but= new TextInputButton();
+    but->name="line break width";
+    but->buttonProperty="LINEBREAKWIDTH";
+    but->bDrawName=true;
+    but->tooltip="wann umschlagen?";
+    but->setLocation(Vector3f(20,640,0));
+    but->scale.x=128;
+    but->scale.y=20;
+    but->textureID="icon_flat";
+    but->parent=this;
+    but->color=Vector4f(0.5,0.5,0.5,1.0);
+    but->bShowCursor=true;
+    but->setup();
+    renderer->buttonList.push_back(but);
+
 
     sli= new SliderButton();
     sli->name="Scroll to beat";
@@ -375,16 +396,58 @@ void testApp::draw(){
 
     ofSetColor(255,255,255);
 
+    drawPreview();
+    drawFinal();
+}
+
+void testApp::drawFinal(){
+
+    ofPushMatrix();
+        ofTranslate(1440,0);
+
+        //window dressing
+        //ofScale(0.3,0.3);
+        ofSetColor(40,40,40);
+        ofRect(0,0,1280,800);
+
+        ofSetColor(255,255,255);
+        ofRect(635,0,10,800);
+
+        //proper text animation
+        // only show pictures after text os finished displaying...
+        if (bShowTextOne)
+            drohneOneFont.drawString(drohneOneText,5,drohneOneFont.stringHeight("A")+10);
+
+        if (bShowImageOne && textOneChar==drohneOne->tooltip.size())
+            drohneOneImage.draw(5,drohneOneFont.stringHeight(drohneOneText)+10);
+
+
+
+        // only show pictures after text os finished displaying...
+        if (bShowTextTwo)
+            drohneTwoFont.drawString(drohneTwoText,650,drohneTwoFont.stringHeight("A")+10);
+
+        if (bShowImageTwo&& textTwoChar==drohneTwo->tooltip.size())
+            drohneTwoImage.draw(655,drohneTwoFont.stringHeight(drohneTwoText)+10);
+
+    ofPopMatrix();
+
+
+
+}
+
+void testApp::drawPreview(){
+
     ofPushMatrix();
         ofTranslate(xOffset,yOffset);
 
         //window dressing
-        ofScale(0.4,0.4);
+        ofScale(0.3,0.3);
         ofSetColor(40,40,40);
-        ofRect(0,0,1920,1080);
+        ofRect(0,0,1280,800);
 
         ofSetColor(255,255,255);
-        ofRect(955,0,10,1080);
+        ofRect(635,0,10,800);
 
         //PREVIEW
         ofSetColor(240,240,180);
@@ -406,9 +469,9 @@ void testApp::draw(){
             }else{
                 string previewText=linebreak(myData->dialog[beat+i].dialogText,&drohneTwoFont);
                 ofSetColor(255,100,100);
-                drohneTwoFont.drawString(ss.str()+".)",965-drohneTwoFont.stringWidth(ss.str()+".)"),yPO);
+                drohneTwoFont.drawString(ss.str()+".)",645-drohneTwoFont.stringWidth(ss.str()+".)"),yPO);
                 ofSetColor(200,200,180);
-                drohneTwoFont.drawString(previewText,970,yPO);
+                drohneTwoFont.drawString(previewText,650,yPO);
                 yPO += drohneTwoFont.stringHeight(previewText)+drohneTwoFont.stringHeight("A");
             }
 
@@ -435,10 +498,10 @@ void testApp::draw(){
 
         // only show pictures after text os finished displaying...
         if (bShowTextTwo)
-            drohneTwoFont.drawString(drohneTwoText,970,drohneTwoFont.stringHeight("A")+10);
+            drohneTwoFont.drawString(drohneTwoText,650,drohneTwoFont.stringHeight("A")+10);
 
         if (bShowImageTwo&& textTwoChar==drohneTwo->tooltip.size())
-            drohneTwoImage.draw(975,drohneTwoFont.stringHeight(drohneTwoText)+10);
+            drohneTwoImage.draw(655,drohneTwoFont.stringHeight(drohneTwoText)+10);
 
     ofPopMatrix();
 
@@ -447,13 +510,12 @@ void testApp::draw(){
 
 string testApp::linebreak(string text, ofTrueTypeFont* myFont){
 
-
     //always go from the back of the text - THIS ONLY WORKS WHEN WE TYPE! NOT WITH PREDEFINED TEXT!
     if (input->bTextInput){
         unsigned foundBreak = text.find_last_of("\n");
         string lastLine= text.substr(foundBreak+1);
         //are we over capacity? then let's insert a linebreak at the last space we find
-        if (myFont->stringWidth(lastLine)>850){
+        if (myFont->stringWidth(lastLine)>590){
             //so let's do it!
             //Find a whitespace
              unsigned foundSpace= lastLine.find_last_of(' ');
@@ -462,31 +524,29 @@ string testApp::linebreak(string text, ofTrueTypeFont* myFont){
         return text;
     }
 
-    //go through text from front
-    //if we found text to be too wide -
-        //go back to last whitespace
-        //insert \n
-    //continue with new line
+    //whereas this only works if we don't type!
+    text=text+' ';  //make sure we have a white space at the end to tokenize last word!
+    int lineWidth=0;
+    string finalText;
 
-    unsigned foundSpace=0;
-    unsigned lastSpace=0;
 
-    while (foundSpace!=string::npos){
-        string firstLine=text.substr(0,foundSpace);
-        if (myFont->stringWidth(firstLine)>850){
-            //put linebreak in lastSpace
-            text.replace(lastSpace,1,"\n");
+    std::istringstream iss(text);
+    std::string token;
+
+    while (getline(iss, token, ' '))   //go word for word
+    {
+        //get width of word
+        lineWidth+=myFont->stringWidth(token+' ');  //add word width to lineWidth
+        if (lineWidth>linebreakWidth){ //must make new line
+            finalText+='\n';//break old line
+            finalText+=token+' ';//add first word in next line
+            lineWidth=myFont->stringWidth(token+' ');//next line width starts with first word
         }else{
-            lastSpace=foundSpace;
+            finalText+=token+' ';//add word to old line
         }
-        //search for next space...
-        foundSpace= text.find(' ',foundSpace+1);
     }
-    //special for one liners
-    if (myFont->stringWidth(text)>850 && lastSpace>0)
-        text.replace(lastSpace,1,"\n");
+    return finalText;
 
-    return text;
 
 }
 
@@ -539,6 +599,8 @@ void testApp::trigger(Actor* other){
         myData->dialog[beat-1].dialogText=drohneOne->tooltip;
         myData->dialog[beat-1].whoIs=1;
         myData->dialog[beat-1].dialogVoiceFile="NULL";
+        if (myData->dialog[beat-1].dialogVoice.isLoaded())
+            myData->dialog[beat-1].dialogVoice.unloadSound();
     }
 
     if (other->name=="replace2"){
@@ -549,6 +611,9 @@ void testApp::trigger(Actor* other){
         myData->dialog[beat-1].dialogText=drohneTwo->tooltip;
         myData->dialog[beat-1].whoIs=2;
         myData->dialog[beat-1].dialogVoiceFile="NULL";
+        if (myData->dialog[beat-1].dialogVoice.isLoaded())
+            myData->dialog[beat-1].dialogVoice.unloadSound();
+
     }
 
 
@@ -568,7 +633,7 @@ void testApp::trigger(Actor* other){
 
     if (other->name=="Drohne2"){
         //delete a post?
-        if (drohneOne->tooltip=="NULL"){
+        if (drohneTwo->tooltip=="NULL"){
             myData->dialog.erase(myData->dialog.begin()+beat);
             for (int i=beat;i<myData->dialog.size();i++){
                 myData->dialog[i].dialogVoiceFile="NULL";
@@ -626,14 +691,22 @@ void testApp::keyReleased(int key){
         return;
 
     if (key==OF_KEY_UP)
-        setTextFromBeat(--beat-1);
+        setTextFromBeat(--beat-1,false);
 
-    if (key==' ' || key==OF_KEY_DOWN)
+    if (key==OF_KEY_DOWN)
+        setTextFromBeat(beat++,false);
+
+    if (key==' ')
         setTextFromBeat(beat++);
 
     if (key=='S'){
         cout << "saving..."<<endl;
         myData->writeTextToFile("dialog.xml");
+    }
+
+    if (key=='L'){
+        cout << "loading..."<<endl;
+        myData->readTextFromFile("dialog.xml");
     }
 
 }

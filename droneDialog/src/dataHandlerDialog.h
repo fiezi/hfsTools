@@ -45,6 +45,8 @@ class DataHandlerDialog : public Actor{
 	    string  droneTwoVoice;
 	    string  systemVoice;
 	    string  voices[3];
+	    string  pitches[3];
+	    string  speeds[3];
 
 	    vector<dialogPart>  dialog;
 

@@ -1,36 +1,92 @@
 <?xml version="1.0" ?>
 <Dronedialog>
-    <SETTINGS Drone1Voice="Yannick" Drone2Voice="Markus" SystemVoice="Anna-ML" />
+    <SETTINGS Drone1Voice="Yannick" Drone2Voice="Markus" SystemVoice="Anna-ML" Drone1Pitch="100" Drone2Pitch="100" SystemPitch="100" Drone1Speed="100" Drone2Speed="100" SystemSpeed="100" />
     <BEAT>
-        <TEXT WHO="1">Hey! wie cool!</TEXT>
+        <TEXT WHO="1">und dann gibt es ueberwachungsdrohnen</TEXT>
         <VOICE>0.wav</VOICE>
     </BEAT>
     <BEAT>
-        <TEXT WHO="1">[happy.jpg]</TEXT>
+        <TEXT WHO="2">was machen die?</TEXT>
         <VOICE>1.wav</VOICE>
     </BEAT>
     <BEAT>
-        <TEXT WHO="2">Find ich nicht...</TEXT>
+        <TEXT WHO="1">...</TEXT>
         <VOICE>2.wav</VOICE>
     </BEAT>
     <BEAT>
-        <TEXT WHO="2">[grumpy.jpg]</TEXT>
+        <TEXT WHO="1">die</TEXT>
         <VOICE>3.wav</VOICE>
     </BEAT>
     <BEAT>
-        <TEXT WHO="1">jetzt mach doch mal nicht so doof!</TEXT>
+        <TEXT WHO="1">schauen.</TEXT>
         <VOICE>4.wav</VOICE>
     </BEAT>
     <BEAT>
-        <TEXT WHO="1">wieso denn nicht?</TEXT>
+        <TEXT WHO="1">sich.</TEXT>
         <VOICE>5.wav</VOICE>
     </BEAT>
     <BEAT>
-        <TEXT WHO="2">ach, is doch sinnlos...</TEXT>
+        <TEXT WHO="1">alles.</TEXT>
         <VOICE>6.wav</VOICE>
     </BEAT>
     <BEAT>
-        <TEXT WHO="1">Doch, total!</TEXT>
+        <TEXT WHO="1">ganz.</TEXT>
         <VOICE>7.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">genau.</TEXT>
+        <VOICE>8.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">an.</TEXT>
+        <VOICE>9.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">...</TEXT>
+        <VOICE>10.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">langweilig.</TEXT>
+        <VOICE>11.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">[wiebitte.jpg]</TEXT>
+        <VOICE>12.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">Wenn ich gross werde, werde ich predator. [predator.jpg]</TEXT>
+        <VOICE>13.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">Du und eine Angriffsdrohne. Ich lach meinen Akku leer. Ha. Ha. Ha.</TEXT>
+        <VOICE>14.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">lalala.jpg</TEXT>
+        <VOICE>15.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">Angriffsdrohnen in gross und klein erweitern die Schlagkraft moderner Armeeverbaende enorm. Und sehen echt was von der Welt, sagen sie. Wuesten und Doerfer.</TEXT>
+        <VOICE>16.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">Hochzeiten!</TEXT>
+        <VOICE>17.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">Was willst Du denn spaeter machen?</TEXT>
+        <VOICE>18.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="1">Ich bin und bleibe Freizeitdrohne. Erschwinglich und nicht zu bedrohlich.</TEXT>
+        <VOICE>19.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">Du willst doch nur Leuten ueber die Hecke schauen und Ballontiere moeglichst effektvoll zerhaeckseln!</TEXT>
+        <VOICE>20.wav</VOICE>
+    </BEAT>
+    <BEAT>
+        <TEXT WHO="2">NULL</TEXT>
+        <VOICE>21.wav</VOICE>
     </BEAT>
 </Dronedialog>

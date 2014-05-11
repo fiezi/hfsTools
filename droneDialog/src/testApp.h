@@ -15,8 +15,8 @@
 
 
 
-#define SCREENRESX 1920
-#define SCREENRESY 1080
+#define SCREENRESX 1440+1280
+#define SCREENRESY 800
 
 
 struct actorID;
@@ -33,6 +33,9 @@ class testApp : public ofBaseApp, public Actor{
 		void setup();
 		void update();
 		void draw();
+
+		void drawPreview();
+		void drawFinal();
 
         bool parseForImage(ofImage* myImage, string text);
 
@@ -77,6 +80,8 @@ class testApp : public ofBaseApp, public Actor{
 		string              drohneTwoText;
 
 		float               xOffset,yOffset;
+
+		float               linebreakWidth;
 
 		bool                bShowTextOne,bShowTextTwo;
 		bool                bShowImageOne,bShowImageTwo;
